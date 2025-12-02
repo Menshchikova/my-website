@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6+ - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #e74c3c;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #fbeee6;
+            border-color: #e74c3c;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .topic-content section {
+            margin-bottom: 3rem;
+        }
+        
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .topic-content h3 {
+            color: #e74c3c;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .topic-btn {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .topic-btn:hover {
+            background: #c0392b;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #e74c3c;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">ES6+ Современные возможности</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#variables" class="toc-link active">Переменные</a></li>
+                        <li><a href="#functions" class="toc-link">Функции</a></li>
+                        <li><a href="#objects" class="toc-link">Объекты</a></li>
+                        <li><a href="#arrays" class="toc-link">Массивы</a></li>
+                        <li><a href="#strings" class="toc-link">Строки</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🚀 ES6+ Современные возможности</h1>
+                    
+                    <section id="variables">
+                        <h2>📦 Переменные: let и const</h2>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h3>let</h3>
+                                <div class="code-block">
+<span class="code-keyword">let</span> name = <span class="code-string">"John"</span>;<br>
+name = <span class="code-string">"Jane"</span>; <span class="code-comment">// Можно изменить</span><br><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < <span class="code-number">3</span>; i++) {<br>
+&nbsp;&nbsp;<span class="code-comment">// i видна только в блоке</span><br>
+}
+                                </div>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h3>const</h3>
+                                <div class="code-block">
+<span class="code-keyword">const</span> PI = <span class="code-number">3.14</span>;<br>
+<span class="code-comment">// PI = 3.15; // Ошибка!</span><br><br>
+<span class="code-keyword">const</span> user = { name: <span class="code-string">"John"</span> };<br>
+user.name = <span class="code-string">"Jane"</span>; <span class="code-comment">// Можно</span><br>
+<span class="code-comment">// user = {}; // Ошибка!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="functions">
+                        <h2>⚙️ Функции: Стрелочные функции</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-comment">// Обычная функция</span><br>
+<span class="code-keyword">function</span> <span class="code-function">add</span>(a, b) {<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> a + b;<br>
+}<br><br>
+<span class="code-comment">// Стрелочная функция</span><br>
+<span class="code-keyword">const</span> add = (a, b) => {<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> a + b;<br>
+};<br><br>
+<span class="code-comment">// Сокращенный синтаксис</span><br>
+<span class="code-keyword">const</span> add = (a, b) => a + b;
+                        </div>
+
+                        <h3>Особенности стрелочных функций</h3>
+                        <div class="code-block">
+<span class="code-comment">// Нет своего this</span><br>
+<span class="code-keyword">const</span> obj = {<br>
+&nbsp;&nbsp;name: <span class="code-string">"John"</span>,<br>
+&nbsp;&nbsp;greet: <span class="code-keyword">function</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">setTimeout</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">`Hello, <span class="code-keyword">${</span><span class="code-keyword">this</span>.name<span class="code-keyword">}</span>`</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}, <span class="code-number">1000</span>);<br>
+&nbsp;&nbsp;}<br>
+};<br><br>
+<span class="code-comment">// Нельзя использовать как конструктор</span><br>
+<span class="code-comment">// const Person = () => {}; // Ошибка с new Person()</span>
+                        </div>
+
+                        <h3>Параметры по умолчанию</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">greet</span>(name = <span class="code-string">"Гость"</span>) {<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">`Hello, <span class="code-keyword">${</span>name<span class="code-keyword">}</span>!`</span>;<br>
+}<br><br>
+<span class="code-function">greet</span>(); <span class="code-comment">// "Hello, Гость!"</span><br>
+<span class="code-function">greet</span>(<span class="code-string">"John"</span>); <span class="code-comment">// "Hello, John!"</span>
+                        </div>
+                    </section>
+
+                    <section id="objects">
+                        <h2>🔧 Объекты: Улучшенный синтаксис</h2>
+                        
+                        <h3>Сокращенная запись свойств</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> name = <span class="code-string">"John"</span>;<br>
+<span class="code-keyword">const</span> age = <span class="code-number">30</span>;<br><br>
+<span class="code-comment">// Старый синтаксис</span><br>
+<span class="code-keyword">const</span> user = {<br>
+&nbsp;&nbsp;name: name,<br>
+&nbsp;&nbsp;age: age<br>
+};<br><br>
+<span class="code-comment">// Новый синтаксис</span><br>
+<span class="code-keyword">const</span> user = { name, age };
+                        </div>
+
+                        <h3>Сокращенная запись методов</h3>
+                        <div class="code-block">
+<span class="code-comment">// Старый синтаксис</span><br>
+<span class="code-keyword">const</span> obj = {<br>
+&nbsp;&nbsp;greet: <span class="code-keyword">function</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">"Hello!"</span>;<br>
+&nbsp;&nbsp;}<br>
+};<br><br>
+<span class="code-comment">// Новый синтаксис</span><br>
+<span class="code-keyword">const</span> obj = {<br>
+&nbsp;&nbsp;<span class="code-function">greet</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">"Hello!"</span>;<br>
+&nbsp;&nbsp;}<br>
+};
+                        </div>
+
+                        <h3>Вычисляемые свойства</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> propName = <span class="code-string">"firstName"</span>;<br>
+<span class="code-keyword">const</span> user = {<br>
+&nbsp;&nbsp;[propName]: <span class="code-string">"John"</span>,<br>
+&nbsp;&nbsp;[<span class="code-string">"last"</span> + <span class="code-string">"Name"</span>]: <span class="code-string">"Doe"</span><br>
+};<br><br>
+console.<span class="code-function">log</span>(user.firstName); <span class="code-comment">// "John"</span><br>
+console.<span class="code-function">log</span>(user.lastName); <span class="code-comment">// "Doe"</span>
+                        </div>
+                    </section>
+
+                    <section id="arrays">
+                        <h2>📊 Массивы: Деструктуризация и Spread</h2>
+                        
+                        <h3>Деструктуризация массивов</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> numbers = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>];<br><br>
+<span class="code-comment">// Базовая деструктуризация</span><br>
+<span class="code-keyword">const</span> [first, second] = numbers;<br>
+console.<span class="code-function">log</span>(first); <span class="code-comment">// 1</span><br><br>
+<span class="code-comment">// Пропуск элементов</span><br>
+<span class="code-keyword">const</span> [,, third] = numbers;<br>
+console.<span class="code-function">log</span>(third); <span class="code-comment">// 3</span><br><br>
+<span class="code-comment">// Оставшиеся элементы</span><br>
+<span class="code-keyword">const</span> [a, b, ...rest] = numbers;<br>
+console.<span class="code-function">log</span>(rest); <span class="code-comment">// [3, 4, 5]</span>
+                        </div>
+
+                        <h3>Spread оператор</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> arr1 = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>];<br>
+<span class="code-keyword">const</span> arr2 = [<span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>];<br><br>
+<span class="code-comment">// Объединение массивов</span><br>
+<span class="code-keyword">const</span> combined = [...arr1, ...arr2];<br>
+console.<span class="code-function">log</span>(combined); <span class="code-comment">// [1, 2, 3, 4, 5, 6]</span><br><br>
+<span class="code-comment">// Копирование массива</span><br>
+<span class="code-keyword">const</span> copy = [...arr1];<br><br>
+<span class="code-comment">// Передача аргументов</span><br>
+<span class="code-keyword">const</span> numbers = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>];<br>
+<span class="code-function">Math</span>.<span class="code-function">max</span>(...numbers); <span class="code-comment">// 3</span>
+                        </div>
+
+                        <h3>Rest параметры</h3>
+                        <div class="code-block">
+<span class="code-comment">// Сбор оставшихся аргументов</span><br>
+<span class="code-keyword">function</span> <span class="code-function">sum</span>(...numbers) {<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> numbers.<span class="code-function">reduce</span>((acc, curr) => acc + curr, <span class="code-number">0</span>);<br>
+}<br><br>
+<span class="code-function">sum</span>(<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>); <span class="code-comment">// 6</span><br>
+<span class="code-function">sum</span>(<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>); <span class="code-comment">// 15</span>
+                        </div>
+                    </section>
+
+                    <section id="strings">
+                        <h2>🔤 Строки: Шаблонные литералы</h2>
+                        
+                        <h3>Шаблонные строки</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> name = <span class="code-string">"John"</span>;<br>
+<span class="code-keyword">const</span> age = <span class="code-number">30</span>;<br><br>
+<span class="code-comment">// Старый синтаксис</span><br>
+<span class="code-keyword">const</span> message = <span class="code-string">"Hello, "</span> + name + <span class="code-string">"! You are "</span> + age + <span class="code-string">" years old."</span>;<br><br>
+<span class="code-comment">// Новый синтаксис</span><br>
+<span class="code-keyword">const</span> message = <span class="code-string">`Hello, <span class="code-keyword">${</span>name<span class="code-keyword">}</span>! You are <span class="code-keyword">${</span>age<span class="code-keyword">}</span> years old.`</span>;<br><br>
+<span class="code-comment">// Многострочные строки</span><br>
+<span class="code-keyword">const</span> multiline = <span class="code-string">`<br>
+  This is<br>
+  a multiline<br>
+  string<br>
+`</span>;
+                        </div>
+
+                        <h3>Методы строк</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> text = <span class="code-string">"Hello World"</span>;<br><br>
+<span class="code-comment">// startsWith / endsWith</span><br>
+text.<span class="code-function">startsWith</span>(<span class="code-string">"Hello"</span>); <span class="code-comment">// true</span><br>
+text.<span class="code-function">endsWith</span>(<span class="code-string">"World"</span>); <span class="code-comment">// true</span><br><br>
+<span class="code-comment">// includes</span><br>
+text.<span class="code-function">includes</span>(<span class="code-string">"lo"</span>); <span class="code-comment">// true</span><br><br>
+<span class="code-comment">// repeat</span><br>
+<span class="code-string">"ha"</span>.<span class="code-function">repeat</span>(<span class="code-number">3</span>); <span class="code-comment">// "hahaha"</span>
+                        </div>
+
+                        <h3>Демонстрация ES6+ возможностей</h3>
+                        <div class="demo-area">
+                            <button onclick="demoTemplateLiterals()">Шаблонные строки</button>
+                            <button onclick="demoDestructuring()">Деструктуризация</button>
+                            <button onclick="demoSpread()">Spread оператор</button>
+                            <p id="es6Output">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: ES6+</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="es6Quiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Какое ключевое слово создает константу?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> let</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> const</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> var</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Как объявить стрелочную функцию?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> () => {}</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> function() {}</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> -> {}</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Что такое деструктуризация?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> Извлечение значений из объектов/массивов</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> Удаление свойств</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> Создание копий</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Что делает оператор ... в массивах?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> Spread - распространяет элементы</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> Rest - собирает элементы</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> Оба варианта верны</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Как создать шаблонную строку?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> `текст ${переменная}`</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> "текст ${переменная}"</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> 'текст ${переменная}'</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Что такое вычисляемые свойства объектов?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> [выражение]: значение</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> выражение: значение</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> {выражение}: значение</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Как установить параметр по умолчанию?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> function f(param = value) {}</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> function f(param: value) {}</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> function f(param == value) {}</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Какая область видимости у let и const?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> Блочная</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> Функциональная</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> Глобальная</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Что такое Rest параметры?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> ...args - сбор аргументов в массив</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> args... - распространение аргументов</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> rest args - остальные аргументы</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Можно ли изменить const объект?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> Да, свойства можно изменять</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> Нет, полностью неизменяем</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> Только если объект пустой</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkEs6Quiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="async.html" class="topic-btn" style="background: #95a5a6;">← Асинхронность</a>
+                        <a href="modules.html" class="topic-btn">Модули →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Демонстрационные функции для ES6+
+        function demoTemplateLiterals() {
+            const name = "Анна";
+            const age = 25;
+            const message = `Привет, ${name}! Тебе ${age} лет.`;
+            document.getElementById('es6Output').textContent = message;
+        }
+
+        function demoDestructuring() {
+            const person = { name: "John", age: 30, city: "Moscow" };
+            const { name, age } = person;
+            document.getElementById('es6Output').textContent = 
+                `Деструктуризация: ${name}, ${age} лет`;
+        }
+
+        function demoSpread() {
+            const arr1 = [1, 2, 3];
+            const arr2 = [4, 5, 6];
+            const combined = [...arr1, ...arr2];
+            document.getElementById('es6Output').textContent = 
+                `Spread оператор: [${combined.join(', ')}]`;
+        }
+
+        function checkEs6Quiz() {
+            const correctAnswers = {
+                q1: 'b', // const
+                q2: 'a', // () => {}
+                q3: 'a', // Извлечение значений из объектов/массивов
+                q4: 'c', // Оба варианта верны
+                q5: 'a', // `текст ${переменная}`
+                q6: 'a', // [выражение]: значение
+                q7: 'a', // function f(param = value) {}
+                q8: 'a', // Блочная
+                q9: 'a', // ...args - сбор аргументов в массив
+                q10: 'a' // Да, свойства можно изменять
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в ES6+!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('es6Quiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

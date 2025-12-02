@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Асинхронность - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #8e44ad;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #8e44ad;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #f4ecf7;
+            border-color: #8e44ad;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .topic-content section {
+            margin-bottom: 3rem;
+        }
+        
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .topic-content h3 {
+            color: #8e44ad;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .topic-btn {
+            display: inline-block;
+            background: #8e44ad;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .topic-btn:hover {
+            background: #7d3c98;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #8e44ad;
+        }
+        
+        .loading {
+            color: #8e44ad;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Асинхронность</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#callbacks" class="toc-link active">Callback функции</a></li>
+                        <li><a href="#promises" class="toc-link">Promise</a></li>
+                        <li><a href="#async-await" class="toc-link">Async/Await</a></li>
+                        <li><a href="#fetch" class="toc-link">Fetch API</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🔄 Асинхронность</h1>
+                    
+                    <section id="callbacks">
+                        <h2>Callback функции</h2>
+                        
+                        <h3>Базовые колбэки</h3>
+                        <div class="code-block">
+<span class="code-comment">// Пример с setTimeout</span><br>
+<span class="code-function">setTimeout</span>(<span class="code-keyword">function</span>() {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Выполнилось через 1 секунду'</span>);<br>
+}, <span class="code-number">1000</span>);<br><br>
+<span class="code-comment">// Колбэк с параметрами</span><br>
+<span class="code-keyword">function</span> <span class="code-function">loadData</span>(callback) {<br>
+&nbsp;&nbsp;<span class="code-function">setTimeout</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">callback</span>(<span class="code-string">'Данные загружены'</span>);<br>
+&nbsp;&nbsp;}, <span class="code-number">1000</span>);<br>
+}<br><br>
+<span class="code-function">loadData</span>((result) => {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(result);<br>
+});
+                        </div>
+                        
+                        <h3>Callback Hell (Ад колбэков)</h3>
+                        <div class="code-block">
+<span class="code-comment">// ПЛОХО: вложенные колбэки</span><br>
+<span class="code-function">getData</span>(<span class="code-keyword">function</span>(data) {<br>
+&nbsp;&nbsp;<span class="code-function">getUser</span>(data.id, <span class="code-keyword">function</span>(user) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">getPosts</span>(user.id, <span class="code-keyword">function</span>(posts) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(posts);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br>
+});
+                        </div>
+
+                        <h3>Демонстрация колбэков</h3>
+                        <div class="demo-area">
+                            <button onclick="demoCallback()">Запустить колбэк</button>
+                            <button onclick="demoCallbackHell()">Показать Callback Hell</button>
+                            <p id="callbackOutput">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="promises">
+                        <h2>🤝 Promise</h2>
+                        
+                        <h3>Создание Promise</h3>
+                        <div class="code-block">
+<span class="code-comment">// Создание Promise</span><br>
+<span class="code-keyword">const</span> promise = <span class="code-keyword">new</span> <span class="code-function">Promise</span>((resolve, reject) => {<br>
+&nbsp;&nbsp;<span class="code-function">setTimeout</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> success = <span class="code-keyword">true</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (success) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">resolve</span>(<span class="code-string">'Данные получены!'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">reject</span>(<span class="code-string">'Ошибка!'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}, <span class="code-number">1000</span>);<br>
+});
+                        </div>
+
+                        <h3>Использование Promise</h3>
+                        <div class="code-block">
+<span class="code-comment">// Использование Promise</span><br>
+promise<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(result => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(result);<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="code-function">catch</span>(error => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(error);<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="code-function">finally</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Завершено'</span>);<br>
+&nbsp;&nbsp;});
+                        </div>
+
+                        <h3>Цепочки Promise</h3>
+                        <div class="code-block">
+<span class="code-comment">// Цепочка вызовов</span><br>
+<span class="code-function">fetchData</span>()<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(data => <span class="code-function">processData</span>(data))<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(processed => <span class="code-function">saveData</span>(processed))<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(() => console.<span class="code-function">log</span>(<span class="code-string">'Все операции завершены'</span>))<br>
+&nbsp;&nbsp;.<span class="code-function">catch</span>(error => console.<span class="code-function">error</span>(<span class="code-string">'Ошибка:'</span>, error));
+                        </div>
+
+                        <h3>Демонстрация Promise</h3>
+                        <div class="demo-area">
+                            <button onclick="demoPromise()">Запустить Promise</button>
+                            <button onclick="demoPromiseChain()">Цепочка Promise</button>
+                            <button onclick="demoPromiseError()">Promise с ошибкой</button>
+                            <p id="promiseOutput">Ожидание результата...</p>
+                        </div>
+                    </section>
+
+                    <section id="async-await">
+                        <h2>⏳ Async/Await</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-comment">// Асинхронная функция</span><br>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> <span class="code-function">fetchData</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> response = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">'https://api.example.com/data'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> data = <span class="code-keyword">await</span> response.<span class="code-function">json</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> data;<br>
+&nbsp;&nbsp;} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Ошибка:'</span>, error);<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Обработка ошибок</h3>
+                        <div class="code-block">
+<span class="code-comment">// try/catch с async/await</span><br>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> <span class="code-function">loadData</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> data = <span class="code-keyword">await</span> <span class="code-function">fetchData</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> processed = <span class="code-keyword">await</span> <span class="code-function">processData</span>(data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> processed;<br>
+&nbsp;&nbsp;} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Ошибка загрузки:'</span>, error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">null</span>;<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Параллельное выполнение</h3>
+                        <div class="code-block">
+<span class="code-comment">// Promise.all - ждет все промисы</span><br>
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> <span class="code-function">loadAllData</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> [users, posts] = <span class="code-keyword">await</span> <span class="code-function">Promise</span>.<span class="code-function">all</span>([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">fetch</span>(<span class="code-string">'/api/users'</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">fetch</span>(<span class="code-string">'/api/posts'</span>)<br>
+&nbsp;&nbsp;]);<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> { users, posts };<br>
+}<br><br>
+<span class="code-comment">// Promise.race - первый выполнившийся</span><br>
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> <span class="code-function">Promise</span>.<span class="code-function">race</span>([<br>
+&nbsp;&nbsp;<span class="code-function">fetch</span>(<span class="code-string">'/api/fast'</span>),<br>
+&nbsp;&nbsp;<span class="code-function">timeout</span>(<span class="code-number">5000</span>) <span class="code-comment">// Таймаут</span><br>
+]);
+                        </div>
+
+                        <h3>Демонстрация Async/Await</h3>
+                        <div class="demo-area">
+                            <button onclick="demoAsyncAwait()">Запустить Async/Await</button>
+                            <button onclick="demoParallel()">Параллельные запросы</button>
+                            <button onclick="demoErrorHandling()">Обработка ошибок</button>
+                            <p id="asyncOutput">Ожидание async операции...</p>
+                        </div>
+                    </section>
+
+                    <section id="fetch">
+                        <h2>🌐 Fetch API</h2>
+                        
+                        <h3>GET запрос</h3>
+                        <div class="code-block">
+<span class="code-comment">// Базовый GET запрос</span><br>
+<span class="code-function">fetch</span>(<span class="code-string">'https://api.example.com/users'</span>)<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(response => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (!response.ok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> <span class="code-keyword">new</span> <span class="code-function">Error</span>(<span class="code-string">'Ошибка сети'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> response.<span class="code-function">json</span>();<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(data => console.<span class="code-function">log</span>(data))<br>
+&nbsp;&nbsp;.<span class="code-function">catch</span>(error => console.<span class="code-function">error</span>(error));
+                        </div>
+
+                        <h3>POST запрос</h3>
+                        <div class="code-block">
+<span class="code-comment">// POST запрос с данными</span><br>
+<span class="code-function">fetch</span>(<span class="code-string">'https://api.example.com/users'</span>, {<br>
+&nbsp;&nbsp;method: <span class="code-string">'POST'</span>,<br>
+&nbsp;&nbsp;headers: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Content-Type'</span>: <span class="code-string">'application/json'</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;body: <span class="code-function">JSON</span>.<span class="code-function">stringify</span>({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name: <span class="code-string">'John'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;age: <span class="code-number">30</span><br>
+&nbsp;&nbsp;})<br>
+})<br>
+.<span class="code-function">then</span>(response => response.<span class="code-function">json</span>())<br>
+.<span class="code-function">then</span>(data => console.<span class="code-function">log</span>(data));
+                        </div>
+
+                        <h3>Демонстрация Fetch</h3>
+                        <div class="demo-area">
+                            <button onclick="demoFetch()">Тестовый Fetch</button>
+                            <button onclick="demoFetchPost()">Fetch POST</button>
+                            <button onclick="demoFetchError()">Fetch с ошибкой</button>
+                            <p id="fetchOutput">Результат fetch запроса</p>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: Асинхронность</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="asyncQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Что возвращает async функция?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> Promise</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> Результат сразу</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> Callback функцию</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Какой метод используют для обработки ошибок в Promise?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> .then()</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> .catch()</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> .finally()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Что такое Callback Hell?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> Много вложенных колбэков</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> Быстрые колбэки</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> Колбэки без ошибок</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Какой метод запускает все Promise параллельно?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> Promise.all()</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> Promise.race()</span></label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> Promise.parallel()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Что делает ключевое слово await?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> Ждет выполнения Promise</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> Останавливает весь код</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> Создает новый поток</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Какой HTTP метод используется для получения данных?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> GET</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> POST</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> PUT</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Что возвращает fetch() по умолчанию?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> Promise</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> Response объект</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> JSON данные</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Как преобразовать Response в JSON?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> response.json()</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> JSON.parse(response)</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> response.toJSON()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Что такое микрозадачи (microtasks)?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> Очередь для Promise</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> Быстрые функции</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> Маленькие задачи</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Какой метод выполнится первым?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> then()</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> setTimeout()</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> Они выполнятся одновременно</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkAsyncQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="events.html" class="topic-btn" style="background: #95a5a6;">← События</a>
+                        <a href="es6.html" class="topic-btn">ES6+ →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Демонстрационные функции для асинхронности
+        function demoCallback() {
+            const output = document.getElementById('callbackOutput');
+            output.innerHTML = '<span class="loading">Загрузка...</span>';
+            
+            setTimeout(() => {
+                output.innerHTML = '<span class="success">Колбэк выполнен через 1 секунду!</span>';
+            }, 1000);
+        }
+
+        function demoCallbackHell() {
+            const output = document.getElementById('callbackOutput');
+            output.innerHTML = '<span class="loading">Имитация Callback Hell...</span>';
+            
+            // Имитация вложенных колбэков
+            setTimeout(() => {
+                setTimeout(() => {
+                    setTimeout(() => {
+                        output.innerHTML = '<span class="success">Callback Hell завершен! (3 уровня вложенности)</span>';
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        function demoPromise() {
+            const output = document.getElementById('promiseOutput');
+            output.innerHTML = '<span class="loading">Promise выполняется...</span>';
+            
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const success = Math.random() > 0.3;
+                    if (success) {
+                        resolve('Promise успешно завершен!');
+                    } else {
+                        reject('Promise завершен с ошибкой!');
+                    }
+                }, 1500);
+            })
+            .then(result => {
+                output.innerHTML = `<span class="success">${result}</span>`;
+            })
+            .catch(error => {
+                output.innerHTML = `<span class="error">${error}</span>`;
+            })
+            .finally(() => {
+                console.log('Promise завершен');
+            });
+        }
+
+        function demoPromiseChain() {
+            const output = document.getElementById('promiseOutput');
+            output.innerHTML = '<span class="loading">Цепочка Promise...</span>';
+            
+            new Promise(resolve => {
+                setTimeout(() => resolve(1), 500);
+            })
+            .then(result => {
+                output.innerHTML += `<br>Шаг 1: ${result}`;
+                return result * 2;
+            })
+            .then(result => {
+                output.innerHTML += `<br>Шаг 2: ${result}`;
+                return result * 2;
+            })
+            .then(result => {
+                output.innerHTML += `<br>Шаг 3: ${result}`;
+                output.innerHTML += '<br><span class="success">Цепочка завершена!</span>';
+            });
+        }
+
+        function demoPromiseError() {
+            const output = document.getElementById('promiseOutput');
+            output.innerHTML = '<span class="loading">Promise с ошибкой...</span>';
+            
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error('Искусственная ошибка!'));
+                }, 1000);
+            })
+            .catch(error => {
+                output.innerHTML = `<span class="error">Ошибка: ${error.message}</span>`;
+            });
+        }
+
+        async function demoAsyncAwait() {
+            const output = document.getElementById('asyncOutput');
+            output.innerHTML = '<span class="loading">Async/Await выполняется...</span>';
+            
+            try {
+                const result = await new Promise(resolve => {
+                    setTimeout(() => resolve('Async/Await успешен!'), 1000);
+                });
+                output.innerHTML = `<span class="success">${result}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error">${error}</span>`;
+            }
+        }
+
+        async function demoParallel() {
+            const output = document.getElementById('asyncOutput');
+            output.innerHTML = '<span class="loading">Параллельные запросы...</span>';
+            
+            const promises = [
+                new Promise(resolve => setTimeout(() => resolve('Данные 1'), 1200)),
+                new Promise(resolve => setTimeout(() => resolve('Данные 2'), 800)),
+                new Promise(resolve => setTimeout(() => resolve('Данные 3'), 1500))
+            ];
+            
+            try {
+                const results = await Promise.all(promises);
+                output.innerHTML = `<span class="success">Все данные получены: ${results.join(', ')}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error">Ошибка: ${error}</span>`;
+            }
+        }
+
+        async function demoErrorHandling() {
+            const output = document.getElementById('asyncOutput');
+            output.innerHTML = '<span class="loading">Тест обработки ошибок...</span>';
+            
+            try {
+                await new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error('Тестовая ошибка')), 1000);
+                });
+            } catch (error) {
+                output.innerHTML = `<span class="error">Ошибка перехвачена: ${error.message}</span>`;
+            }
+        }
+
+        async function demoFetch() {
+            const output = document.getElementById('fetchOutput');
+            output.innerHTML = '<span class="loading">Fetch запрос...</span>';
+            
+            try {
+                // Имитация fetch запроса
+                const response = await new Promise(resolve => {
+                    setTimeout(() => resolve({
+                        ok: true,
+                        json: () => Promise.resolve({ data: 'Тестовые данные', status: 'success' })
+                    }), 1000);
+                });
+                
+                const data = await response.json();
+                output.innerHTML = `<span class="success">Данные получены: ${JSON.stringify(data)}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error">Ошибка fetch: ${error}</span>`;
+            }
+        }
+
+        function demoFetchPost() {
+            const output = document.getElementById('fetchOutput');
+            output.innerHTML = '<span class="loading">POST запрос...</span>';
+            
+            // Имитация POST запроса
+            setTimeout(() => {
+                output.innerHTML = '<span class="success">POST запрос успешен! Данные сохранены.</span>';
+            }, 1000);
+        }
+
+        function demoFetchError() {
+            const output = document.getElementById('fetchOutput');
+            output.innerHTML = '<span class="loading">Fetch с ошибкой...</span>';
+            
+            setTimeout(() => {
+                output.innerHTML = '<span class="error">Ошибка сети: Не удалось выполнить запрос</span>';
+            }, 1000);
+        }
+
+        function checkAsyncQuiz() {
+            const correctAnswers = {
+                q1: 'a', // Promise
+                q2: 'b', // .catch()
+                q3: 'a', // Много вложенных колбэков
+                q4: 'a', // Promise.all()
+                q5: 'a', // Ждет выполнения Promise
+                q6: 'a', // GET
+                q7: 'a', // Promise
+                q8: 'a', // response.json()
+                q9: 'a', // Очередь для Promise
+                q10: 'a' // then()
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в асинхронности!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('asyncQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

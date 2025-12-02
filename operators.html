@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Операторы - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #3498db;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .operator-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .operator-table th, .operator-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .operator-table th {
+            background: #3498db;
+            color: white;
+        }
+        
+        .operator-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Операторы</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#arithmetic" class="toc-link active">Арифметические</a></li>
+                        <li><a href="#comparison" class="toc-link">Операторы сравнения</a></li>
+                        <li><a href="#logical" class="toc-link">Логические операторы</a></li>
+                        <li><a href="#assignment" class="toc-link">Операторы присваивания</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🔢 Операторы</h1>
+                    
+                    <section id="arithmetic">
+                        <h2>➕ Арифметические операторы</h2>
+                        
+                        <table class="operator-table">
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Описание</th>
+                                <th>Пример</th>
+                                <th>Результат</th>
+                            </tr>
+                            <tr>
+                                <td>+</td>
+                                <td>Сложение</td>
+                                <td>5 + 2</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Вычитание</td>
+                                <td>5 - 2</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>*</td>
+                                <td>Умножение</td>
+                                <td>5 * 2</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>/</td>
+                                <td>Деление</td>
+                                <td>5 / 2</td>
+                                <td>2.5</td>
+                            </tr>
+                            <tr>
+                                <td>%</td>
+                                <td>Остаток от деления</td>
+                                <td>5 % 2</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>**</td>
+                                <td>Возведение в степень</td>
+                                <td>5 ** 2</td>
+                                <td>25</td>
+                            </tr>
+                        </table>
+
+                        <h3>Инкремент и декремент</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> x = <span class="code-number">5</span>;<br><br>
+<span class="code-comment">// Постфиксная форма</span><br>
+x++; <span class="code-comment">// x = 6, возвращает 5</span><br>
+x--; <span class="code-comment">// x = 5, возвращает 6</span><br><br>
+<span class="code-comment">// Префиксная форма</span><br>
+++x; <span class="code-comment">// x = 6, возвращает 6</span><br>
+--x; <span class="code-comment">// x = 5, возвращает 5</span>
+                        </div>
+                    </section>
+
+                    <section id="comparison">
+                        <h2>⚖️ Операторы сравнения</h2>
+                        
+                        <table class="operator-table">
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Описание</th>
+                                <th>Пример</th>
+                                <th>Результат</th>
+                            </tr>
+                            <tr>
+                                <td>==</td>
+                                <td>Равно (с приведением типов)</td>
+                                <td>5 == "5"</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td>===</td>
+                                <td>Строго равно</td>
+                                <td>5 === "5"</td>
+                                <td>false</td>
+                            </tr>
+                            <tr>
+                                <td>!=</td>
+                                <td>Не равно</td>
+                                <td>5 != "6"</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td>!==</td>
+                                <td>Строго не равно</td>
+                                <td>5 !== "5"</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td>></td>
+                                <td>Больше</td>
+                                <td>5 > 3</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td><</td>
+                                <td>Меньше</td>
+                                <td>5 < 3</td>
+                                <td>false</td>
+                            </tr>
+                            <tr>
+                                <td>>=</td>
+                                <td>Больше или равно</td>
+                                <td>5 >= 5</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td><=</td>
+                                <td>Меньше или равно</td>
+                                <td>5 <= 3</td>
+                                <td>false</td>
+                            </tr>
+                        </table>
+
+                        <h3>Особенности сравнения</h3>
+                        <div class="code-block">
+<span class="code-comment">// Сравнение с null и undefined</span><br>
+<span class="code-keyword">null</span> == <span class="code-keyword">undefined</span>; <span class="code-comment">// true</span><br>
+<span class="code-keyword">null</span> === <span class="code-keyword">undefined</span>; <span class="code-comment">// false</span><br><br>
+<span class="code-comment">// NaN никогда не равен ничему, даже самому себе</span><br>
+<span class="code-function">NaN</span> == <span class="code-function">NaN</span>; <span class="code-comment">// false</span><br>
+<span class="code-function">isNaN</span>(<span class="code-function">NaN</span>); <span class="code-comment">// true</span>
+                        </div>
+                    </section>
+
+                    <section id="logical">
+                        <h2>🔗 Логические операторы</h2>
+                        
+                        <table class="operator-table">
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Описание</th>
+                                <th>Пример</th>
+                                <th>Результат</th>
+                            </tr>
+                            <tr>
+                                <td>&&</td>
+                                <td>И (AND)</td>
+                                <td>true && false</td>
+                                <td>false</td>
+                            </tr>
+                            <tr>
+                                <td>||</td>
+                                <td>ИЛИ (OR)</td>
+                                <td>true || false</td>
+                                <td>true</td>
+                            </tr>
+                            <tr>
+                                <td>!</td>
+                                <td>НЕ (NOT)</td>
+                                <td>!true</td>
+                                <td>false</td>
+                            </tr>
+                        </table>
+
+                        <h3>Короткий цикл вычислений</h3>
+                        <div class="code-block">
+<span class="code-comment">// && возвращает первое ложное значение или последнее</span><br>
+<span class="code-number">0</span> && <span class="code-number">2</span>; <span class="code-comment">// 0</span><br>
+<span class="code-number">1</span> && <span class="code-number">2</span>; <span class="code-comment">// 2</span><br><br>
+<span class="code-comment">// || возвращает первое истинное значение или последнее</span><br>
+<span class="code-number">0</span> || <span class="code-number">2</span>; <span class="code-comment">// 2</span><br>
+<span class="code-number">1</span> || <span class="code-number">2</span>; <span class="code-comment">// 1</span><br><br>
+<span class="code-comment">// Использование для установки значений по умолчанию</span><br>
+<span class="code-keyword">const</span> name = inputName || <span class="code-string">"Гость"</span>;
+                        </div>
+
+                        <h3>Оператор нулевого слияния (??)</h3>
+                        <div class="code-block">
+<span class="code-comment">// ?? возвращает правый операнд, если левый null или undefined</span><br>
+<span class="code-keyword">null</span> ?? <span class="code-string">"default"</span>; <span class="code-comment">// "default"</span><br>
+<span class="code-number">0</span> ?? <span class="code-string">"default"</span>; <span class="code-comment">// 0</span><br>
+<span class="code-string">""</span> ?? <span class="code-string">"default"</span>; <span class="code-comment">// ""</span><br><br>
+<span class="code-comment">// Отличие от ||</span><br>
+<span class="code-number">0</span> || <span class="code-string">"default"</span>; <span class="code-comment">// "default"</span><br>
+<span class="code-number">0</span> ?? <span class="code-string">"default"</span>; <span class="code-comment">// 0</span>
+                        </div>
+                    </section>
+
+                    <section id="assignment">
+                        <h2>📝 Операторы присваивания</h2>
+                        
+                        <table class="operator-table">
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Пример</th>
+                                <th>Эквивалент</th>
+                            </tr>
+                            <tr>
+                                <td>=</td>
+                                <td>x = 5</td>
+                                <td>x = 5</td>
+                            </tr>
+                            <tr>
+                                <td>+=</td>
+                                <td>x += 3</td>
+                                <td>x = x + 3</td>
+                            </tr>
+                            <tr>
+                                <td>-=</td>
+                                <td>x -= 2</td>
+                                <td>x = x - 2</td>
+                            </tr>
+                            <tr>
+                                <td>*=</td>
+                                <td>x *= 4</td>
+                                <td>x = x * 4</td>
+                            </tr>
+                            <tr>
+                                <td>/=</td>
+                                <td>x /= 2</td>
+                                <td>x = x / 2</td>
+                            </tr>
+                            <tr>
+                                <td>%=</td>
+                                <td>x %= 3</td>
+                                <td>x = x % 3</td>
+                            </tr>
+                            <tr>
+                                <td>**=</td>
+                                <td>x **= 2</td>
+                                <td>x = x ** 2</td>
+                            </tr>
+                        </table>
+
+                        <h3>Примеры использования</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> count = <span class="code-number">10</span>;<br><br>
+count += <span class="code-number">5</span>; <span class="code-comment">// count = 15</span><br>
+count -= <span class="code-number">3</span>; <span class="code-comment">// count = 12</span><br>
+count *= <span class="code-number">2</span>; <span class="code-comment">// count = 24</span><br>
+count /= <span class="code-number">4</span>; <span class="code-comment">// count = 6</span><br><br>
+<span class="code-comment">// Со строками</span><br>
+<span class="code-keyword">let</span> text = <span class="code-string">"Hello"</span>;<br>
+text += <span class="code-string">" World"</span>; <span class="code-comment">// "Hello World"</span>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: Операторы</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="operatorsQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Что вернет выражение: 5 + "5"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> 10</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> "55"</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> Ошибка</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Какой оператор проверяет строгое равенство?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> ==</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> ===</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> =</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Что вернет: null || "default"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> null</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> "default"</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> true</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Какой оператор возвращает остаток от деления?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> %</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> /</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> //</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Что вернет: 0 ?? "default"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> 0</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> "default"</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> false</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Какой оператор используется для возведения в степень?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> **</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> ^</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> pow()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Что вернет: !!"false"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> false</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> true</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> "false"</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Какой оператор имеет самый высокий приоритет?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> *</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> +</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> =</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Что вернет: 1 && 0 && 2?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> 0</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> 1</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> 2</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Какой оператор используется для инкремента?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> ++</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> +1</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> +=</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkOperatorsQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="variables.html" class="topic-btn" style="background: #95a5a6;">← Переменные</a>
+                        <a href="conditionals.html" class="topic-btn">Условные конструкции →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function checkOperatorsQuiz() {
+            const correctAnswers = {
+                q1: 'b', // "55"
+                q2: 'b', // ===
+                q3: 'b', // "default"
+                q4: 'a', // %
+                q5: 'a', // 0
+                q6: 'a', // **
+                q7: 'b', // true
+                q8: 'a', // *
+                q9: 'a', // 0
+                q10: 'a' // ++
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в операторах!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('operatorsQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

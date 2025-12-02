@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .search-results {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .result-item {
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .result-description {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .result-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .result-link:hover {
+            text-decoration: underline;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+        
+        .search-info {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #e3f2fd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Поиск по справочнику</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Введите поисковый запрос..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content">
+                <div class="search-results">
+                    <div class="search-info">
+                        <h3>Результаты поиска для: "<span id="searchQuery"></span>"</h3>
+                        <p>Найдено: <span id="resultsCount">0</span> результатов</p>
+                    </div>
+                    
+                    <div id="resultsContainer">
+                        <!-- Результаты поиска будут здесь -->
+                    </div>
+                    
+                    <div id="noResults" class="no-results" style="display: none;">
+                        <h3>😔 Ничего не найдено</h3>
+                        <p>Попробуйте изменить поисковый запрос или посмотрите следующие темы:</p>
+                        <div style="margin-top: 1rem;">
+                            <a href="variables.html" class="topic-btn" style="display: inline-block; margin: 0.25rem;">Переменные</a>
+                            <a href="functions.html" class="topic-btn" style="display: inline-block; margin: 0.25rem;">Функции</a>
+                            <a href="objects.html" class="topic-btn" style="display: inline-block; margin: 0.25rem;">Объекты</a>
+                            <a href="arrays.html" class="topic-btn" style="display: inline-block; margin: 0.25rem;">Массивы</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="popular-searches">
+                    <h3>🔍 Популярные запросы</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="search-tag" onclick="searchTag('функции')">функции</button>
+                        <button class="search-tag" onclick="searchTag('массивы')">массивы</button>
+                        <button class="search-tag" onclick="searchTag('объекты')">объекты</button>
+                        <button class="search-tag" onclick="searchTag('DOM')">DOM</button>
+                        <button class="search-tag" onclick="searchTag('события')">события</button>
+                        <button class="search-tag" onclick="searchTag('асинхронность')">асинхронность</button>
+                        <button class="search-tag" onclick="searchTag('Promise')">Promise</button>
+                        <button class="search-tag" onclick="searchTag('async await')">async await</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // База данных для поиска
+        const searchDatabase = [
+            {
+                title: "Переменные и типы данных",
+                description: "let, const, var, типы данных, преобразование типов, область видимости",
+                url: "variables.html",
+                keywords: ["переменные", "let", "const", "var", "типы данных", "number", "string", "boolean", "undefined", "null", "область видимости"]
+            },
+            {
+                title: "Функции",
+                description: "Function Declaration, Function Expression, стрелочные функции, замыкания, рекурсия",
+                url: "functions.html",
+                keywords: ["функции", "function", "стрелочные функции", "замыкания", "closure", "рекурсия", "параметры", "аргументы"]
+            },
+            {
+                title: "Объекты",
+                description: "Создание объектов, свойства и методы, геттеры и сеттеры, деструктуризация",
+                url: "objects.html",
+                keywords: ["объекты", "object", "свойства", "методы", "геттер", "сеттер", "деструктуризация", "this"]
+            },
+            {
+                title: "Массивы",
+                description: "Создание массивов, методы массивов, итерация, деструктуризация, spread оператор",
+                url: "arrays.html",
+                keywords: ["массивы", "array", "map", "filter", "reduce", "forEach", "деструктуризация", "spread", "rest"]
+            },
+            {
+                title: "DOM Manipulation",
+                description: "Выбор элементов, изменение содержимого, создание и удаление элементов, работа со стилями",
+                url: "dom.html",
+                keywords: ["DOM", "document", "элементы", "создание", "удаление", "стили", "querySelector", "getElementById"]
+            },
+            {
+                title: "События",
+                description: "Обработчики событий, объект event, делегирование, отмена действий, типы событий",
+                url: "events.html",
+                keywords: ["события", "event", "обработчики", "delegation", "делегирование", "click", "keydown", "submit"]
+            },
+            {
+                title: "Асинхронность",
+                description: "Callback функции, Promise, async/await, Fetch API, обработка ошибок",
+                url: "async.html",
+                keywords: ["асинхронность", "callback", "promise", "async", "await", "fetch", "then", "catch"]
+            },
+            {
+                title: "ES6+ Современные возможности",
+                description: "let/const, стрелочные функции, шаблонные строки, деструктуризация, spread/rest",
+                url: "es6.html",
+                keywords: ["ES6", "стрелочные функции", "шаблонные строки", "деструктуризация", "spread", "rest", "let", "const"]
+            }
+        ];
+
+        // Функция поиска
+        function performSearch(query) {
+            const normalizedQuery = query.toLowerCase().trim();
+            const results = searchDatabase.filter(item => {
+                // Поиск по заголовку, описанию и ключевым словам
+                return item.title.toLowerCase().includes(normalizedQuery) ||
+                       item.description.toLowerCase().includes(normalizedQuery) ||
+                       item.keywords.some(keyword => keyword.includes(normalizedQuery));
+            });
+
+            displayResults(results, query);
+        }
+
+        // Отображение результатов
+        function displayResults(results, query) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const noResults = document.getElementById('noResults');
+            const searchQuery = document.getElementById('searchQuery');
+            const resultsCount = document.getElementById('resultsCount');
+
+            searchQuery.textContent = query;
+            resultsCount.textContent = results.length;
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            
+            resultsContainer.innerHTML = results.map(item => `
+                <div class="result-item">
+                    <div class="result-title">${item.title}</div>
+                    <div class="result-description">${item.description}</div>
+                    <a href="${item.url}" class="result-link">Перейти к теме →</a>
+                </div>
+            `).join('');
+        }
+
+        // Поиск по тегу
+        function searchTag(tag) {
+            document.getElementById('searchInput').value = tag;
+            performSearch(tag);
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            
+            if (query) {
+                document.getElementById('searchInput').value = query;
+                performSearch(query);
+            }
+
+            // Обработчик формы поиска
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = document.getElementById('searchInput').value.trim();
+                if (query) {
+                    performSearch(query);
+                    // Обновляем URL без перезагрузки страницы
+                    window.history.pushState({}, '', `search.html?q=${encodeURIComponent(query)}`);
+                }
+            });
+        });
+
+        // Стили для тегов поиска
+        const style = document.createElement('style');
+        style.textContent = `
+            .search-tag {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background 0.3s ease;
+            }
+            
+            .search-tag:hover {
+                background: #2980b9;
+            }
+            
+            .popular-searches {
+                background: white;
+                border-radius: 10px;
+                padding: 2rem;
+                margin: 2rem 0;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

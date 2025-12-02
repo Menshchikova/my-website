@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern JS Guide - Полный справочник JavaScript</title>
+    <style>
+        /* Базовые стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, var(--secondary), #4a6491);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            background: var(--primary);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--white), #a3d5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* Поиск */
+        .search-container {
+            width: 100%;
+            position: relative;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+            background: var(--white);
+        }
+        
+        .search-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 0 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            font-weight: 600;
+        }
+        
+        .search-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Стили для автодополнения поиска */
+        .search-suggestions {
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .suggestion-item {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+            cursor: pointer;
+            outline: none;
+            background: white;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item:focus {
+            background: #f8fafc;
+            border-left: 3px solid var(--primary);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        .suggestion-preview {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .suggestion-category {
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .suggestion-item.no-results {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .suggestion-item.no-results:hover {
+            background: transparent;
+            border-left: none;
+        }
+
+        /* Подсветка найденного текста */
+        .search-highlight {
+            background-color: #fff3cd;
+            padding: 1px 3px;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        /* Адаптивность для поиска */
+        @media (max-width: 768px) {
+            .search-suggestions {
+                position: fixed !important;
+                top: auto !important;
+                left: 20px !important;
+                right: 20px !important;
+                width: auto !important;
+                max-height: 50vh !important;
+            }
+        }
+        
+        /* Основной контент */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        /* Сайдбар */
+        .sidebar {
+            flex: 0 0 300px;
+        }
+        
+        .toc {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .toc-title {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-item {
+            margin-bottom: 15px;
+        }
+        
+        .toc-link {
+            display: block;
+            padding: 10px 15px;
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toc-link::before {
+            content: '▸';
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .toc-link:hover, .toc-link.active {
+            background-color: #f0f7ff;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .toc-link:hover::before, .toc-link.active::before {
+            transform: translateX(3px);
+        }
+        
+        .toc-sublist {
+            list-style: none;
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .toc-sublist li {
+            margin-bottom: 8px;
+        }
+        
+        .toc-sublist .toc-link {
+            font-weight: normal;
+            padding: 8px 15px;
+            font-size: 0.95rem;
+            border-left: 2px solid #e0e0e0;
+        }
+        
+        .toc-sublist .toc-link:hover {
+            border-left-color: var(--primary);
+        }
+        
+        /* Контент */
+        .content {
+            flex: 1;
+        }
+        
+        /* Приветственная секция */
+        .welcome-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+        
+        .welcome-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .welcome-content {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .welcome-text {
+            flex: 1;
+        }
+        
+        .welcome-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        .features-list {
+            list-style: none;
+        }
+        
+        .features-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+        
+        .features-list li:hover {
+            background-color: #f9f9f9;
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+        
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .welcome-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 250px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Быстрый доступ */
+        .quick-access {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .quick-access h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .topic-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid #eaeaea;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+            background: var(--white);
+        }
+        
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .topic-card h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .topic-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .topic-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        
+        .topic-btn:hover {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* Недавние темы */
+        .recent-topics {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .recent-topics h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+        
+        .recent-item:hover {
+            background: #f0f7ff;
+            transform: translateX(5px);
+            border-left-color: var(--primary);
+        }
+        
+        .recent-badge {
+            background: var(--accent);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .recent-badge.HOT {
+            background: var(--accent);
+        }
+        
+        .recent-badge.NEW {
+            background: var(--success);
+        }
+        
+        .recent-badge.POPULAR {
+            background: var(--warning);
+        }
+        
+        .recent-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            flex: 1;
+            transition: var(--transition);
+        }
+        
+        .recent-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Футер */
+        .footer {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 40px 0 20px;
+            border-radius: 20px 20px 0 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            column-gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .footer-section p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-section ul li a::before {
+            content: '›';
+            font-size: 1.2rem;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--white);
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+        }
+        
+        /* Прогресс-индикатор */
+        .progress-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #eaeaea;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: 0%;
+            transition: width 1s ease;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, 0.2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.2) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            z-index: 1;
+            background-size: 20px 20px;
+            animation: move 2s linear infinite;
+            border-radius: 5px;
+        }
+        
+        @keyframes move {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 20px 0;
+            }
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 1;
+            }
+            
+            .toc {
+                position: static;
+            }
+            
+            .welcome-content {
+                flex-direction: column;
+            }
+            
+            .welcome-stats {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .stat-card {
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+            }
+            
+            .logo {
+                align-items: center;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-stats {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Дополнительные стили для улучшения UX */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+            }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, -10px); }
+            100% { transform: translate(0, 0px); }
+        }
+        
+        /* FAQ модальное окно */
+        .faq-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .faq-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-faq {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Полный справочник JavaScript</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li class="toc-item">
+                            <a href="#basics" class="toc-link active">Основы JavaScript</a>
+                            <ul class="toc-sublist">
+                                <li><a href="variables.html" class="toc-link">Переменные и типы данных</a></li>
+                                <li><a href="operators.html" class="toc-link">Операторы</a></li>
+                                <li><a href="functions.html" class="toc-link">Функции</a></li>
+                                <li><a href="conditionals.html" class="toc-link">Условные конструкции</a></li>
+                                <li><a href="loops.html" class="toc-link">Циклы</a></li>
+                            </ul>
+                        </li>
+                        <li class="toc-item">
+                            <a href="#objects" class="toc-link">Объекты и структуры данных</a>
+                            <ul class="toc-sublist">
+                                <li><a href="objects.html" class="toc-link">Объекты</a></li>
+                                <li><a href="arrays.html" class="toc-link">Массивы</a></li>
+                                <li><a href="classes.html" class="toc-link">Классы</a></li>
+                            </ul>
+                        </li>
+                        <li class="toc-item">
+                            <a href="#dom" class="toc-link">Работа с DOM</a>
+                            <ul class="toc-sublist">
+                                <li><a href="dom.html" class="toc-link">DOM Manipulation</a></li>
+                                <li><a href="events.html" class="toc-link">События</a></li>
+                                <li><a href="forms.html" class="toc-link">Формы</a></li>
+                                <li><a href="onclick.html" class="toc-link">Обработчик onclick</a></li>
+                            </ul>
+                        </li>
+                        <li class="toc-item">
+                            <a href="#advanced" class="toc-link">Продвинутые темы</a>
+                            <ul class="toc-sublist">
+                                <li><a href="async.html" class="toc-link">Асинхронность</a></li>
+                                <li><a href="es6.html" class="toc-link">ES6+ Фичи</a></li>
+                                <li><a href="modules.html" class="toc-link">Модули</a></li>
+                                <li><a href="error-handling.html" class="toc-link">Обработка ошибок</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <section class="welcome-section">
+                    <h2>Добро пожаловать в Modern JS Guide! 🎉</h2>
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <p>Этот справочник поможет вам освоить JavaScript от основ до продвинутых концепций. Каждая тема содержит:</p>
+                            <ul class="features-list">
+                                <li>📖 Подробные объяснения с примерами</li>
+                                <li>💻 Интерактивные примеры кода</li>
+                                <li>🎯 Практические задания</li>
+                                <li>📝 Тесты для проверки знаний (10 вопросов)</li>
+                            </ul>
+                        </div>
+                        <div class="welcome-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">15+</div>
+                                <div class="stat-label">Тем</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">100+</div>
+                                <div class="stat-label">Примеров</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">150+</div>
+                                <div class="stat-label">Вопросов</div>
+                            </div>
+                            <div class="progress-info" id="progressIndicator">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div class="progress-text">Ваш прогресс: <span id="progressPercent">0%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="quick-access">
+                    <h3>🚀 Начните изучение</h3>
+                    <div class="topics-grid">
+                        <div class="topic-card">
+                            <div class="topic-icon">📦</div>
+                            <h4>Переменные и типы</h4>
+                            <p>Изучите основы: let, const, типы данных</p>
+                            <a href="variables.html" class="topic-btn">Начать изучение</a>
+                        </div>
+                        <div class="topic-card">
+                            <div class="topic-icon">⚙️</div>
+                            <h4>Функции</h4>
+                            <p>Function Declaration, стрелочные функции, замыкания</p>
+                            <a href="functions.html" class="topic-btn">Начать изучение</a>
+                        </div>
+                        <div class="topic-card">
+                            <div class="topic-icon">🔧</div>
+                            <h4>Объекты и массивы</h4>
+                            <p>Работа с объектами, методы массивов, деструктуризация</p>
+                            <a href="objects.html" class="topic-btn">Начать изучение</a>
+                        </div>
+                        <div class="topic-card">
+                            <div class="topic-icon">🌐</div>
+                            <h4>DOM Manipulation</h4>
+                            <p>Работа с DOM, создание и изменение элементов</p>
+                            <a href="dom.html" class="topic-btn">Начать изучение</a>
+                        </div>
+                        <div class="topic-card">
+                            <div class="topic-icon">🎯</div>
+                            <h4>Обработчик onclick</h4>
+                            <p>Обработка кликов, inline обработчики, addEventListener</p>
+                            <a href="onclick.html" class="topic-btn">Начать изучение</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="recent-topics">
+                    <h3>🆕 Популярные темы</h3>
+                    <div class="recent-list">
+                        <div class="recent-item">
+                            <span class="recent-badge HOT">HOT</span>
+                            <a href="async.html" class="recent-link">Асинхронность: Promise, async/await</a>
+                        </div>
+                        <div class="recent-item">
+                            <span class="recent-badge NEW">NEW</span>
+                            <a href="es6.html" class="recent-link">ES6+ Современные возможности JavaScript</a>
+                        </div>
+                        <div class="recent-item">
+                            <span class="recent-badge POPULAR">POPULAR</span>
+                            <a href="functions.html" class="recent-link">Функции и замыкания</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Полный и современный справочник по JavaScript для разработчиков любого уровня</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Разделы</h4>
+                    <ul>
+                        <li><a href="#basics" onclick="scrollToSection('basics')">Основы</a></li>
+                        <li><a href="#objects" onclick="scrollToSection('objects')">Объекты</a></li>
+                        <li><a href="#dom" onclick="scrollToSection('dom')">DOM</a></li>
+                        <li><a href="#advanced" onclick="scrollToSection('advanced')">Продвинутые темы</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Помощь</h4>
+                    <ul>
+                        <li><a href="#search" onclick="document.getElementById('searchInput').focus()">Поиск</a></li>
+                        <li><a href="#faq" onclick="showFAQ()">FAQ</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- FAQ Модальное окно -->
+    <div class="faq-modal" id="faqModal">
+        <div class="faq-content">
+            <button class="close-faq" onclick="closeFAQ()">×</button>
+            <h2>❓ Часто задаваемые вопросы</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Как начать изучение JavaScript?</div>
+                <div class="faq-answer">Начните с раздела "Основы JavaScript", затем переходите к "Функциям" и "Объектам". Каждая тема содержит примеры и практические задания.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Нужны ли предварительные знания?</div>
+                <div class="faq-answer">Нет, справочник разработан для начинающих. Начните с основ и постепенно переходите к сложным темам.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Как пользоваться поиском?</div>
+                <div class="faq-answer">Введите ключевые слова в поисковую строку. Система предложит подходящие разделы. Можно искать по названиям тем, ключевым словам или категориям.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Есть ли практические задания?</div>
+                <div class="faq-answer">Да, в каждом разделе есть практические задания и тесты для проверки знаний.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Как связаться с авторами?</div>
+                <div class="faq-answer">Перейдите на страницу "Контакты", где можно оставить отзыв или задать вопрос.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Можно ли использовать код из примеров?</div>
+                <div class="faq-answer">Да, весь код в примерах можно свободно использовать в своих проектах.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Как следить за обновлениями?</div>
+                <div class="faq-answer">Регулярно проверяйте раздел "Популярные темы" - там появляются новые материалы.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Есть ли мобильная версия?</div>
+                <div class="faq-answer">Да, сайт полностью адаптирован для мобильных устройств.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // База данных для поиска
+        const searchDatabase = [
+            {
+                title: 'Функции в JavaScript',
+                link: 'functions.html',
+                category: 'Основы JavaScript',
+                preview: 'Function declaration, function expression, стрелочные функции, замыкания',
+                keywords: ['функция', 'function', 'замыкание', 'callback']
+            },
+            {
+                title: 'Стрелочные функции ES6+',
+                link: 'es6.html',
+                category: 'Продвинутые темы',
+                preview: 'Современный синтаксис стрелочных функций с примерами использования',
+                keywords: ['стрелочная', 'arrow', 'es6', 'функция']
+            },
+            {
+                title: 'Переменные и типы данных',
+                link: 'variables.html',
+                category: 'Основы JavaScript',
+                preview: 'let, const, var, типы данных, приведение типов',
+                keywords: ['переменная', 'variable', 'тип', 'data type', 'let', 'const']
+            },
+            {
+                title: 'Операторы',
+                link: 'operators.html',
+                category: 'Основы JavaScript',
+                preview: 'Арифметические, логические, сравнения и другие операторы',
+                keywords: ['оператор', 'operator', 'арифметический', 'логический']
+            },
+            {
+                title: 'Условные конструкции',
+                link: 'conditionals.html',
+                category: 'Основы JavaScript',
+                preview: 'if/else, switch, тернарный оператор',
+                keywords: ['условие', 'conditional', 'if', 'else', 'switch']
+            },
+            {
+                title: 'Циклы',
+                link: 'loops.html',
+                category: 'Основы JavaScript',
+                preview: 'for, while, do...while, for...of, for...in',
+                keywords: ['цикл', 'loop', 'for', 'while', 'итерация']
+            },
+            {
+                title: 'Объекты',
+                link: 'objects.html',
+                category: 'Объекты и структуры данных',
+                preview: 'Создание объектов, методы, свойства, this',
+                keywords: ['объект', 'object', 'свойство', 'method']
+            },
+            {
+                title: 'Массивы',
+                link: 'arrays.html',
+                category: 'Объекты и структуры данных',
+                preview: 'Методы массивов: map, filter, reduce, forEach',
+                keywords: ['массив', 'array', 'map', 'filter', 'reduce']
+            },
+            {
+                title: 'Классы',
+                link: 'classes.html',
+                category: 'Объекты и структуры данных',
+                preview: 'Классы ES6, наследование, статические методы',
+                keywords: ['класс', 'class', 'наследование', 'inheritance']
+            },
+            {
+                title: 'DOM Manipulation',
+                link: 'dom.html',
+                category: 'Работа с DOM',
+                preview: 'Работа с DOM, создание и изменение элементов',
+                keywords: ['dom', 'элемент', 'element', 'манипуляция']
+            },
+            {
+                title: 'События',
+                link: 'events.html',
+                category: 'Работа с DOM',
+                preview: 'Обработка событий, event listeners',
+                keywords: ['событие', 'event', 'click', 'listener']
+            },
+            {
+                title: 'Формы',
+                link: 'forms.html',
+                category: 'Работа с DOM',
+                preview: 'Работа с формами, валидация, отправка данных',
+                keywords: ['форма', 'form', 'валидация', 'input']
+            },
+            {
+                title: 'Обработчик onclick',
+                link: 'onclick.html',
+                category: 'Работа с DOM',
+                preview: 'Обработка кликов, inline обработчики, addEventListener, практические примеры',
+                keywords: ['onclick', 'клик', 'click', 'обработчик', 'событие', 'кнопка']
+            },
+            {
+                title: 'Асинхронность',
+                link: 'async.html',
+                category: 'Продвинутые темы',
+                preview: 'Promise, async/await, обработка асинхронных операций',
+                keywords: ['асинхронность', 'async', 'promise', 'await']
+            },
+            {
+                title: 'ES6+ Фичи',
+                link: 'es6.html',
+                category: 'Продвинутые темы',
+                preview: 'Современные возможности JavaScript ES6+',
+                keywords: ['es6', 'современный', 'modern', 'фичи']
+            },
+            {
+                title: 'Модули',
+                link: 'modules.html',
+                category: 'Продвинутые темы',
+                preview: 'Импорт/экспорт модулей, ES6 modules',
+                keywords: ['модуль', 'module', 'import', 'export']
+            },
+            {
+                title: 'Обработка ошибок',
+                link: 'error-handling.html',
+                category: 'Продвинутые темы',
+                preview: 'try/catch, throw, обработка исключений',
+                keywords: ['ошибка', 'error', 'try', 'catch', 'exception']
+            }
+        ];
+
+        // ИНИЦИАЛИЗАЦИЯ ПОИСКА С АВТОДОПОЛНЕНИЕМ
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            
+            if (!searchInput) return;
+            
+            // Создаем контейнер для подсказок
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'search-suggestions';
+            suggestionsContainer.style.cssText = `
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-radius: 0 0 15px 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                max-height: 300px;
+                overflow-y: auto;
+                z-index: 1000;
+                display: none;
+                margin-top: 5px;
+            `;
+            
+            // Вставляем контейнер под полем поиска
+            searchInput.parentNode.appendChild(suggestionsContainer);
+            
+            // Обработчик ввода в поиск
+            let searchTimeout;
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+                
+                if (query.length < 2) {
+                    hideSuggestions();
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    const results = searchItems(query);
+                    showSuggestions(results, query);
+                }, 300);
+            });
+            
+            // Обработчик фокуса
+            searchInput.addEventListener('focus', function() {
+                const query = this.value.trim();
+                if (query.length >= 2) {
+                    const results = searchItems(query);
+                    showSuggestions(results, query);
+                }
+            });
+            
+            // Обработчик потери фокуса
+            searchInput.addEventListener('blur', function() {
+                // Небольшая задержка чтобы можно было кликнуть на подсказку
+                setTimeout(hideSuggestions, 200);
+            });
+            
+            // Обработчик клавиш
+            searchInput.addEventListener('keydown', function(e) {
+                const visibleSuggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+                
+                if (e.key === 'ArrowDown' && visibleSuggestions.length > 0) {
+                    e.preventDefault();
+                    const firstSuggestion = visibleSuggestions[0];
+                    firstSuggestion.focus();
+                }
+                
+                if (e.key === 'Escape') {
+                    hideSuggestions();
+                    this.blur();
+                }
+            });
+            
+            // Обработчик формы (для тех, кто предпочитает нажать Enter)
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const query = searchInput.value.trim();
+                    
+                    if (query !== '') {
+                        const results = searchItems(query);
+                        if (results.length > 0) {
+                            // Перенаправляем на первую найденную страницу
+                            window.location.href = results[0].link;
+                        } else {
+                            showNoResults(query);
+                        }
+                    }
+                });
+            }
+            
+            // Функция поиска по базе данных
+            function searchItems(query) {
+                const lowerQuery = query.toLowerCase();
+                
+                return searchDatabase.filter(item => {
+                    // Поиск по заголовку
+                    if (item.title.toLowerCase().includes(lowerQuery)) {
+                        return true;
+                    }
+                    
+                    // Поиск по описанию
+                    if (item.preview.toLowerCase().includes(lowerQuery)) {
+                        return true;
+                    }
+                    
+                    // Поиск по ключевым словам
+                    if (item.keywords.some(keyword => 
+                        keyword.toLowerCase().includes(lowerQuery) || 
+                        lowerQuery.includes(keyword.toLowerCase())
+                    )) {
+                        return true;
+                    }
+                    
+                    // Поиск по категории
+                    if (item.category.toLowerCase().includes(lowerQuery)) {
+                        return true;
+                    }
+                    
+                    return false;
+                });
+            }
+            
+            // Функция показа подсказок
+            function showSuggestions(results, query) {
+                const suggestionsContainer = document.querySelector('.search-suggestions');
+                if (!suggestionsContainer) return;
+                
+                if (results.length === 0) {
+                    suggestionsContainer.innerHTML = `
+                        <div class="suggestion-item no-results">
+                            <div>Ничего не найдено для "${query}"</div>
+                        </div>
+                    `;
+                    suggestionsContainer.style.display = 'block';
+                    return;
+                }
+                
+                let html = '';
+                
+                results.slice(0, 8).forEach((result, index) => {
+                    const highlightedTitle = highlightText(result.title, query);
+                    const highlightedPreview = highlightText(result.preview, query);
+                    
+                    html += `
+                        <a href="${result.link}" class="suggestion-item" ${index === 0 ? 'autofocus' : ''}>
+                            <div class="suggestion-title">${highlightedTitle}</div>
+                            <div class="suggestion-preview">${highlightedPreview}</div>
+                            <div class="suggestion-category">${result.category}</div>
+                        </a>
+                    `;
+                });
+                
+                suggestionsContainer.innerHTML = html;
+                suggestionsContainer.style.display = 'block';
+                
+                // Добавляем обработчики для подсказок
+                const suggestionItems = suggestionsContainer.querySelectorAll('.suggestion-item');
+                suggestionItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.location.href = this.getAttribute('href');
+                    });
+                    
+                    item.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            window.location.href = this.getAttribute('href');
+                        }
+                        
+                        const allItems = suggestionsContainer.querySelectorAll('.suggestion-item');
+                        const currentIndex = Array.from(allItems).indexOf(this);
+                        
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const nextItem = allItems[currentIndex + 1];
+                            if (nextItem) nextItem.focus();
+                        }
+                        
+                        if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            if (currentIndex > 0) {
+                                allItems[currentIndex - 1].focus();
+                            } else {
+                                document.getElementById('searchInput').focus();
+                            }
+                        }
+                        
+                        if (e.key === 'Escape') {
+                            hideSuggestions();
+                            document.getElementById('searchInput').focus();
+                        }
+                    });
+                });
+            }
+            
+            // Функция скрытия подсказок
+            function hideSuggestions() {
+                const suggestionsContainer = document.querySelector('.search-suggestions');
+                if (suggestionsContainer) {
+                    suggestionsContainer.style.display = 'none';
+                }
+            }
+            
+            // Функция подсветки текста
+            function highlightText(text, query) {
+                if (!query) return text;
+                
+                const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+                return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+            }
+            
+            // Экранирование спецсимволов для regex
+            function escapeRegex(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+            
+            // Показать сообщение "нет результатов"
+            function showNoResults(query) {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.value = '';
+                searchInput.placeholder = `Ничего не найдено для "${query}"`;
+                setTimeout(() => {
+                    searchInput.placeholder = 'Поиск по справочнику...';
+                }, 2000);
+            }
+        }
+
+        // Функции для переходов по разделам
+        function scrollToSection(sectionId) {
+            const tocItem = document.querySelector(`a[href="#${sectionId}"]`);
+            if (tocItem) {
+                tocItem.scrollIntoView({ behavior: 'smooth' });
+                // Подсвечиваем активный раздел
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                tocItem.classList.add('active');
+            }
+        }
+
+        // Функции для FAQ
+        function showFAQ() {
+            document.getElementById('faqModal').style.display = 'flex';
+        }
+
+        function closeFAQ() {
+            document.getElementById('faqModal').style.display = 'none';
+        }
+
+        // Закрытие FAQ при клике вне окна
+        window.addEventListener('click', function(event) {
+            const faqModal = document.getElementById('faqModal');
+            if (event.target === faqModal) {
+                closeFAQ();
+            }
+        });
+
+        // Анимация прогресса при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация поиска
+            initializeSearch();
+            
+            // Имитация прогресса изучения
+            setTimeout(function() {
+                const progressFill = document.getElementById('progressFill');
+                const progressPercent = document.getElementById('progressPercent');
+                const targetPercent = 35; // Процент прогресса
+                
+                progressFill.style.width = targetPercent + '%';
+                progressPercent.textContent = targetPercent + '%';
+            }, 500);
+            
+            // Подсветка активных ссылок в содержании
+            const tocLinks = document.querySelectorAll('.toc-link');
+            tocLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    tocLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Добавление анимации к карточкам при прокрутке
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за карточками
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

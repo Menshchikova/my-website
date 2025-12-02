@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обработка ошибок - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #e67e22;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #e67e22;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #fef5e7;
+            border-color: #e67e22;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #e67e22;
+        }
+        
+        .error-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .error-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .error-card.success {
+            border-left-color: #27ae60;
+        }
+        
+        .error-card.warning {
+            border-left-color: #f39c12;
+        }
+        
+        .error-card.info {
+            border-left-color: #3498db;
+        }
+        
+        .demo-btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .demo-btn:hover {
+            background: #d35400;
+        }
+        
+        .demo-btn.danger {
+            background: #e74c3c;
+        }
+        
+        .demo-btn.danger:hover {
+            background: #c0392b;
+        }
+        
+        .demo-btn.success {
+            background: #27ae60;
+        }
+        
+        .demo-btn.success:hover {
+            background: #229954;
+        }
+        
+        .error-output {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-height: 100px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .warning-message {
+            color: #f39c12;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Обработка ошибок</span>
+                </h1>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🚨 Обработка ошибок в JavaScript</h1>
+                    
+                    <section id="introduction">
+                        <h2>🎯 Введение в обработку ошибок</h2>
+                        
+                        <p>Обработка ошибок — важная часть разработки, которая делает приложения стабильными и предсказуемыми. JavaScript предоставляет несколько механизмов для обработки ошибок.</p>
+                        
+                        <div class="error-types">
+                            <div class="error-card">
+                                <h4>❌ Синтаксические ошибки</h4>
+                                <p>Ошибки в синтаксисе кода, которые обнаруживаются при парсинге.</p>
+                            </div>
+                            <div class="error-card">
+                                <h4>🚫 Ошибки времени выполнения</h4>
+                                <p>Ошибки, возникающие во время выполнения программы.</p>
+                            </div>
+                            <div class="error-card">
+                                <h4>🌐 Ошибки сети</h4>
+                                <p>Проблемы с сетевыми запросами и соединениями.</p>
+                            </div>
+                            <div class="error-card success">
+                                <h4>✅ Логические ошибки</h4>
+                                <p>Код работает, но выдает неверный результат.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="try-catch">
+                        <h2>🛡️ Try...Catch</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;<span class="code-comment">// Код, который может вызвать ошибку</span><br>
+&nbsp;&nbsp;<span class="code-function">riskyOperation</span>();<br>
+} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;<span class="code-comment">// Обработка ошибки</span><br>
+&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Произошла ошибка:'</span>, error.message);<br>
+} <span class="code-keyword">finally</span> {<br>
+&nbsp;&nbsp;<span class="code-comment">// Код, который выполнится в любом случае</span><br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Операция завершена'</span>);<br>
+}
+                        </div>
+
+                        <h3>Практический пример</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">parseJSON</span>(jsonString) {<br>
+&nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> result = <span class="code-function">JSON</span>.<span class="code-function">parse</span>(jsonString);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> result;<br>
+&nbsp;&nbsp;} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Ошибка парсинга JSON:'</span>, error.message);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">null</span>;<br>
+&nbsp;&nbsp;} <span class="code-keyword">finally</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Парсинг JSON завершен'</span>);<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Демонстрация Try...Catch</h3>
+                        <div class="demo-area">
+                            <h4>Тестирование обработки ошибок</h4>
+                            <button class="demo-btn" onclick="demoTryCatch()">Вызвать ошибку (обработанную)</button>
+                            <button class="demo-btn danger" onclick="demoUncaughtError()">Вызвать необработанную ошибку</button>
+                            <button class="demo-btn success" onclick="demoSuccessfulOperation()">Успешная операция</button>
+                            
+                            <div class="error-output" id="tryCatchOutput">
+                                Результаты появятся здесь...
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="custom-errors">
+                        <h2>🎨 Пользовательские ошибки</h2>
+                        
+                        <h3>Создание классов ошибок</h3>
+                        <div class="code-block">
+<span class="code-keyword">class</span> ValidationError <span class="code-keyword">extends</span> Error {<br>
+&nbsp;&nbsp;<span class="code-function">constructor</span>(message, field) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">super</span>(message);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">this</span>.name = <span class="code-string">'ValidationError'</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">this</span>.field = field;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">this</span>.timestamp = <span class="code-keyword">new</span> <span class="code-function">Date</span>();<br>
+&nbsp;&nbsp;}<br>
+}<br><br>
+<span class="code-keyword">class</span> NetworkError <span class="code-keyword">extends</span> Error {<br>
+&nbsp;&nbsp;<span class="code-function">constructor</span>(message, statusCode) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">super</span>(message);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">this</span>.name = <span class="code-string">'NetworkError'</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">this</span>.statusCode = statusCode;<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Использование пользовательских ошибок</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">validateUser</span>(user) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (!user.email) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> <span class="code-keyword">new</span> <span class="code-function">ValidationError</span>(<span class="code-string">'Email обязателен'</span>, <span class="code-string">'email'</span>);<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (user.password.<span class="code-function">length</span> &lt; <span class="code-number">6</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> <span class="code-keyword">new</span> <span class="code-function">ValidationError</span>(<span class="code-string">'Пароль слишком короткий'</span>, <span class="code-string">'password'</span>);<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">true</span>;<br>
+}<br><br>
+<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;<span class="code-function">validateUser</span>({ email: <span class="code-string">''</span>, password: <span class="code-string">'123'</span> });<br>
+} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (error <span class="code-keyword">instanceof</span> ValidationError) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">`Ошибка валидации в поле <span class="code-keyword">${</span>error.field<span class="code-keyword">}</span>: <span class="code-keyword">${</span>error.message<span class="code-keyword">}</span>`</span>);<br>
+&nbsp;&nbsp;} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> error; <span class="code-comment">// Пробрасываем другие ошибки</span><br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Демонстрация пользовательских ошибок</h3>
+                        <div class="demo-area">
+                            <h4>Тестирование пользовательских ошибок</h4>
+                            <button class="demo-btn" onclick="demoValidationError()">Ошибка валидации</button>
+                            <button class="demo-btn" onclick="demoNetworkError()">Ошибка сети</button>
+                            <button class="demo-btn success" onclick="demoSuccessValidation()">Успешная валидация</button>
+                            
+                            <div class="error-output" id="customErrorsOutput">
+                                Результаты валидации появятся здесь...
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="async-errors">
+                        <h2>⚡ Ошибки в асинхронном коде</h2>
+                        
+                        <h3>Обработка в промисах</h3>
+                        <div class="code-block">
+<span class="code-function">fetchData</span>()<br>
+&nbsp;&nbsp;.<span class="code-function">then</span>(data => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Данные получены:'</span>, data);<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="code-function">catch</span>(error => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Ошибка получения данных:'</span>, error);<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;.<span class="code-function">finally</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Запрос завершен'</span>);<br>
+&nbsp;&nbsp;});
+                        </div>
+
+                        <h3>Async/Await с Try...Catch</h3>
+                        <div class="code-block">
+<span class="code-keyword">async</span> <span class="code-keyword">function</span> <span class="code-function">loadUserData</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> response = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">'/api/user'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (!response.ok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> <span class="code-keyword">new</span> <span class="code-function">Error</span>(<span class="code-string">`HTTP error! status: <span class="code-keyword">${</span>response.status<span class="code-keyword">}</span>`</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> userData = <span class="code-keyword">await</span> response.<span class="code-function">json</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> userData;<br>
+&nbsp;&nbsp;} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Ошибка загрузки пользователя:'</span>, error.message);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> error; <span class="code-comment">// Пробрасываем ошибку дальше</span><br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Глобальная обработка ошибок</h3>
+                        <div class="code-block">
+<span class="code-comment">// Обработка необработанных ошибок промисов</span><br>
+window.<span class="code-function">addEventListener</span>(<span class="code-string">'unhandledrejection'</span>, event => {<br>
+&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Необработанная ошибка промиса:'</span>, event.reason);<br>
+&nbsp;&nbsp;event.<span class="code-function">preventDefault</span>();<br>
+});<br><br>
+<span class="code-comment">// Глобальная обработка ошибок</span><br>
+window.<span class="code-function">addEventListener</span>(<span class="code-string">'error'</span>, event => {<br>
+&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Глобальная ошибка:'</span>, event.error);<br>
+});
+                        </div>
+
+                        <h3>Демонстрация асинхронных ошибок</h3>
+                        <div class="demo-area">
+                            <h4>Тестирование асинхронных операций</h4>
+                            <button class="demo-btn" onclick="demoAsyncSuccess()">Успешный асинхронный запрос</button>
+                            <button class="demo-btn danger" onclick="demoAsyncError()">Асинхронный запрос с ошибкой</button>
+                            <button class="demo-btn" onclick="demoPromiseRejection()">Необработанный промис</button>
+                            
+                            <div class="error-output" id="asyncErrorsOutput">
+                                Результаты асинхронных операций появятся здесь...
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="best-practices">
+                        <h2>🏆 Лучшие практики</h2>
+                        
+                        <h3>1. Специфичная обработка ошибок</h3>
+                        <div class="code-block">
+<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;<span class="code-function">someOperation</span>();<br>
+} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (error <span class="code-keyword">instanceof</span> TypeError) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Обработка TypeError</span><br>
+&nbsp;&nbsp;} <span class="code-keyword">else</span> <span class="code-keyword">if</span> (error <span class="code-keyword">instanceof</span> RangeError) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Обработка RangeError</span><br>
+&nbsp;&nbsp;} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Обработка других ошибок</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">throw</span> error;<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>2. Логирование ошибок</h3>
+                        <div class="code-block">
+<span class="code-keyword">class</span> ErrorLogger {<br>
+&nbsp;&nbsp;<span class="code-keyword">static</span> <span class="code-function">log</span>(error, context = {}) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> logEntry = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp: <span class="code-keyword">new</span> <span class="code-function">Date</span>().<span class="code-function">toISOString</span>(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message: error.message,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stack: error.stack,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context: context<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Отправка на сервер или сохранение в localStorage</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">error</span>(<span class="code-string">'Logged error:'</span>, logEntry);<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>3. Graceful Degradation</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">loadFeature</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Попытка загрузить расширенную функциональность</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">loadAdvancedFeature</span>();<br>
+&nbsp;&nbsp;} <span class="code-keyword">catch</span> (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">warn</span>(<span class="code-string">'Расширенная функциональность недоступна'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Возврат к базовой функциональности</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">loadBasicFeature</span>();<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🧪 Тест: Обработка ошибок</h2>
+                        
+                        <div class="question">
+                            <p><strong>1. Какой блок выполняется всегда, независимо от ошибки?</strong></p>
+                            <div class="answers">
+                                <label class="answer-label"><input type="radio" name="q1" value="a"> finally</label>
+                                <label class="answer-label"><input type="radio" name="q1" value="b"> always</label>
+                                <label class="answer-label"><input type="radio" name="q1" value="c"> complete</label>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p><strong>2. Как создать пользовательский класс ошибки?</strong></p>
+                            <div class="answers">
+                                <label class="answer-label"><input type="radio" name="q2" value="a"> class MyError extends Error</label>
+                                <label class="answer-label"><input type="radio" name="q2" value="b"> class MyError implements Error</label>
+                                <label class="answer-label"><input type="radio" name="q2" value="c"> function MyError()</label>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p><strong>3. Как обработать ошибку в промисах?</strong></p>
+                            <div class="answers">
+                                <label class="answer-label"><input type="radio" name="q3" value="a"> .catch()</label>
+                                <label class="answer-label"><input type="radio" name="q3" value="b"> .error()</label>
+                                <label class="answer-label"><input type="radio" name="q3" value="c"> .fail()</label>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p><strong>4. Какое событие обрабатывает необработанные ошибки промисов?</strong></p>
+                            <div class="answers">
+                                <label class="answer-label"><input type="radio" name="q4" value="a"> unhandledrejection</label>
+                                <label class="answer-label"><input type="radio" name="q4" value="b"> promiseerror</label>
+                                <label class="answer-label"><input type="radio" name="q4" value="c"> rejectionhandled</label>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p><strong>5. Как проверить тип ошибки?</strong></p>
+                            <div class="answers">
+                                <label class="answer-label"><input type="radio" name="q5" value="a"> error instanceof TypeError</label>
+                                <label class="answer-label"><input type="radio" name="q5" value="b"> error.type === 'TypeError'</label>
+                                <label class="answer-label"><input type="radio" name="q5" value="c"> typeof error === 'TypeError'</label>
+                            </div>
+                        </div>
+
+                        <button onclick="checkErrorHandlingQuiz()" class="demo-btn">Проверить ответы</button>
+                        
+                        <div id="errorQuizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <h3>Результат теста</h3>
+                            <p id="errorResultText"></p>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="modules.html" class="demo-btn" style="background: #95a5a6;">← Модули</a>
+                        <a href="index.html" class="demo-btn success">На главную →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Классы пользовательских ошибок
+        class ValidationError extends Error {
+            constructor(message, field) {
+                super(message);
+                this.name = 'ValidationError';
+                this.field = field;
+                this.timestamp = new Date();
+            }
+        }
+
+        class NetworkError extends Error {
+            constructor(message, statusCode) {
+                super(message);
+                this.name = 'NetworkError';
+                this.statusCode = statusCode;
+            }
+        }
+
+        // Демонстрационные функции
+        function demoTryCatch() {
+            const output = document.getElementById('tryCatchOutput');
+            output.textContent = '';
+            
+            try {
+                // Имитация операции, которая может вызвать ошибку
+                const result = JSON.parse('invalid json');
+                output.textContent = `Успех: ${result}`;
+            } catch (error) {
+                output.innerHTML = `<span class="error-message">Ошибка перехвачена: ${error.message}</span>`;
+            } finally {
+                output.textContent += '\nБлок finally выполнен!';
+            }
+        }
+
+        function demoUncaughtError() {
+            // Эта ошибка не будет обработана try-catch
+            throw new Error('Это необработанная ошибка!');
+        }
+
+        function demoSuccessfulOperation() {
+            const output = document.getElementById('tryCatchOutput');
+            
+            try {
+                const result = JSON.parse('{"success": true}');
+                output.innerHTML = `<span class="success-message">Успех: ${JSON.stringify(result)}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error-message">Ошибка: ${error.message}</span>`;
+            }
+        }
+
+        function demoValidationError() {
+            const output = document.getElementById('customErrorsOutput');
+            output.textContent = '';
+            
+            try {
+                validateUser({ email: '', password: '123' });
+                output.innerHTML = '<span class="success-message">✅ Валидация пройдена!</span>';
+            } catch (error) {
+                if (error instanceof ValidationError) {
+                    output.innerHTML = `<span class="error-message">❌ Ошибка валидации в поле "${error.field}": ${error.message}</span>`;
+                } else {
+                    output.innerHTML = `<span class="error-message">❌ Неизвестная ошибка: ${error.message}</span>`;
+                }
+            }
+        }
+
+        function demoNetworkError() {
+            const output = document.getElementById('customErrorsOutput');
+            output.textContent = '';
+            
+            try {
+                throw new NetworkError('Сервер недоступен', 503);
+            } catch (error) {
+                if (error instanceof NetworkError) {
+                    output.innerHTML = `<span class="error-message">🌐 Ошибка сети (${error.statusCode}): ${error.message}</span>`;
+                }
+            }
+        }
+
+        function demoSuccessValidation() {
+            const output = document.getElementById('customErrorsOutput');
+            output.textContent = '';
+            
+            try {
+                validateUser({ email: 'test@example.com', password: 'securepassword' });
+                output.innerHTML = '<span class="success-message">✅ Валидация пройдена успешно!</span>';
+            } catch (error) {
+                output.innerHTML = `<span class="error-message">❌ Ошибка: ${error.message}</span>`;
+            }
+        }
+
+        function validateUser(user) {
+            if (!user.email) {
+                throw new ValidationError('Email обязателен', 'email');
+            }
+            
+            if (user.password.length < 6) {
+                throw new ValidationError('Пароль слишком короткий', 'password');
+            }
+            
+            return true;
+        }
+
+        // Асинхронные демо
+        async function demoAsyncSuccess() {
+            const output = document.getElementById('asyncErrorsOutput');
+            output.textContent = 'Загрузка...';
+            
+            try {
+                // Имитация успешного асинхронного запроса
+                const result = await new Promise(resolve => {
+                    setTimeout(() => resolve({ data: 'Успешные данные' }), 1000);
+                });
+                
+                output.innerHTML = `<span class="success-message">✅ Данные получены: ${JSON.stringify(result)}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error-message">❌ Ошибка: ${error.message}</span>`;
+            }
+        }
+
+        async function demoAsyncError() {
+            const output = document.getElementById('asyncErrorsOutput');
+            output.textContent = 'Загрузка...';
+            
+            try {
+                // Имитация асинхронного запроса с ошибкой
+                const result = await new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error('Сервер не отвечает')), 1000);
+                });
+                
+                output.innerHTML = `<span class="success-message">✅ Данные получены: ${JSON.stringify(result)}</span>`;
+            } catch (error) {
+                output.innerHTML = `<span class="error-message">❌ Ошибка: ${error.message}</span>`;
+            }
+        }
+
+        function demoPromiseRejection() {
+            const output = document.getElementById('asyncErrorsOutput');
+            output.textContent = 'Создание необработанного промиса...';
+            
+            // Создаем промис, который будет отклонен, но не обработан
+            new Promise((resolve, reject) => {
+                setTimeout(() => reject(new Error('Необработанное отклонение промиса')), 500);
+            });
+            
+            output.textContent += '\nПромис создан (ошибка будет в консоли)';
+        }
+
+        // Обработчик глобальных ошибок для демонстрации
+        window.addEventListener('unhandledrejection', event => {
+            console.error('Необработанная ошибка промиса:', event.reason);
+        });
+
+        // Функция для проверки теста
+        function checkErrorHandlingQuiz() {
+            const answers = {
+                q1: 'a',
+                q2: 'a',
+                q3: 'a',
+                q4: 'a',
+                q5: 'a'
+            };
+
+            let score = 0;
+            const total = Object.keys(answers).length;
+
+            for (const [question, correctAnswer] of Object.entries(answers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                    selected.parentElement.style.background = '#e8f5e9';
+                } else if (selected) {
+                    selected.parentElement.style.background = '#ffebee';
+                }
+            }
+
+            const resultElement = document.getElementById('errorResultText');
+            const resultContainer = document.getElementById('errorQuizResult');
+            
+            resultElement.textContent = `Вы ответили правильно на ${score} из ${total} вопросов!`;
+            resultContainer.style.display = 'block';
+
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

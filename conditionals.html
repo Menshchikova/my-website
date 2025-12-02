@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Условные конструкции - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #9b59b6;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #9b59b6;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #f3e5f5;
+            border-color: #9b59b6;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #9b59b6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Условные конструкции</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#if-else" class="toc-link active">if...else</a></li>
+                        <li><a href="#switch" class="toc-link">switch</a></li>
+                        <li><a href="#ternary" class="toc-link">Тернарный оператор</a></li>
+                        <li><a href="#logical" class="toc-link">Логические операторы</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🎯 Условные конструкции</h1>
+                    
+                    <section id="if-else">
+                        <h2>if...else</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-keyword">if</span> (condition) {<br>
+&nbsp;&nbsp;<span class="code-comment">// код выполнится, если condition истинно</span><br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;<span class="code-comment">// код выполнится, если condition ложно</span><br>
+}
+                        </div>
+
+                        <h3>Цепочка условий</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> score = <span class="code-number">85</span>;<br><br>
+<span class="code-keyword">if</span> (score >= <span class="code-number">90</span>) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Отлично!"</span>);<br>
+} <span class="code-keyword">else</span> <span class="code-keyword">if</span> (score >= <span class="code-number">70</span>) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Хорошо!"</span>);<br>
+} <span class="code-keyword">else</span> <span class="code-keyword">if</span> (score >= <span class="code-number">50</span>) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Удовлетворительно"</span>);<br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Неудовлетворительно"</span>);<br>
+}
+                        </div>
+
+                        <h3>Вложенные условия</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> age = <span class="code-number">20</span>;<br>
+<span class="code-keyword">let</span> hasLicense = <span class="code-keyword">true</span>;<br><br>
+<span class="code-keyword">if</span> (age >= <span class="code-number">18</span>) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (hasLicense) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Можно водить машину"</span>);<br>
+&nbsp;&nbsp;} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Нужны права"</span>);<br>
+&nbsp;&nbsp;}<br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Слишком молод"</span>);<br>
+}
+                        </div>
+
+                        <h3>Демонстрация if...else</h3>
+                        <div class="demo-area">
+                            <input type="number" id="scoreInput" placeholder="Введите баллы" style="padding: 0.5rem; margin-right: 1rem;">
+                            <button onclick="checkScore()">Проверить оценку</button>
+                            <p id="scoreOutput">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="switch">
+                        <h2>🔀 switch</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> day = <span class="code-string">"Monday"</span>;<br><br>
+<span class="code-keyword">switch</span> (day) {<br>
+&nbsp;&nbsp;<span class="code-keyword">case</span> <span class="code-string">"Monday"</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Начало недели"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">case</span> <span class="code-string">"Friday"</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Конец недели"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">default</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Обычный день"</span>);<br>
+}
+                        </div>
+
+                        <h3>Группировка case</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> grade = <span class="code-string">"B"</span>;<br><br>
+<span class="code-keyword">switch</span> (grade) {<br>
+&nbsp;&nbsp;<span class="code-keyword">case</span> <span class="code-string">"A"</span>:<br>
+&nbsp;&nbsp;<span class="code-keyword">case</span> <span class="code-string">"B"</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Отлично!"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">case</span> <span class="code-string">"C"</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Хорошо"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">default</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Нужно улучшить"</span>);<br>
+}
+                        </div>
+
+                        <h3>Демонстрация switch</h3>
+                        <div class="demo-area">
+                            <select id="daySelect" style="padding: 0.5rem; margin-right: 1rem;">
+                                <option value="Monday">Понедельник</option>
+                                <option value="Tuesday">Вторник</option>
+                                <option value="Wednesday">Среда</option>
+                                <option value="Thursday">Четверг</option>
+                                <option value="Friday">Пятница</option>
+                                <option value="Saturday">Суббота</option>
+                                <option value="Sunday">Воскресенье</option>
+                            </select>
+                            <button onclick="checkDay()">Проверить день</button>
+                            <p id="dayOutput">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="ternary">
+                        <h2>❓ Тернарный оператор</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-comment">// условие ? значение_если_истина : значение_если_ложь</span><br>
+<span class="code-keyword">let</span> age = <span class="code-number">20</span>;<br>
+<span class="code-keyword">let</span> message = age >= <span class="code-number">18</span> ? <span class="code-string">"Взрослый"</span> : <span class="code-string">"Ребенок"</span>;<br>
+console.<span class="code-function">log</span>(message); <span class="code-comment">// "Взрослый"</span>
+                        </div>
+
+                        <h3>Вложенные тернарные операторы</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> score = <span class="code-number">85</span>;<br>
+<span class="code-keyword">let</span> grade = score >= <span class="code-number">90</span> ? <span class="code-string">"A"</span> :<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score >= <span class="code-number">80</span> ? <span class="code-string">"B"</span> :<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score >= <span class="code-number">70</span> ? <span class="code-string">"C"</span> : <span class="code-string">"D"</span>;<br><br>
+console.<span class="code-function">log</span>(grade); <span class="code-comment">// "B"</span>
+                        </div>
+
+                        <h3>Использование с функциями</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">getFee</span>(isMember) {<br>
+&nbsp;&nbsp;<span class="code-keyword">return</span> isMember ? <span class="code-string">"$2.00"</span> : <span class="code-string">"$10.00"</span>;<br>
+}<br><br>
+<span class="code-function">getFee</span>(<span class="code-keyword">true</span>); <span class="code-comment">// "$2.00"</span><br>
+<span class="code-function">getFee</span>(<span class="code-keyword">false</span>); <span class="code-comment">// "$10.00"</span>
+                        </div>
+
+                        <h3>Демонстрация тернарного оператора</h3>
+                        <div class="demo-area">
+                            <input type="number" id="ageInput" placeholder="Введите возраст" style="padding: 0.5rem; margin-right: 1rem;">
+                            <button onclick="checkAge()">Проверить возраст</button>
+                            <p id="ageOutput">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="logical">
+                        <h2>🔗 Логические операторы в условиях</h2>
+                        
+                        <h3>Логическое И (&&)</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> age = <span class="code-number">25</span>;<br>
+<span class="code-keyword">let</span> hasLicense = <span class="code-keyword">true</span>;<br><br>
+<span class="code-keyword">if</span> (age >= <span class="code-number">18</span> && hasLicense) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Можно водить"</span>);<br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Нельзя водить"</span>);<br>
+}
+                        </div>
+
+                        <h3>Логическое ИЛИ (||)</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> isWeekend = <span class="code-keyword">true</span>;<br>
+<span class="code-keyword">let</span> isHoliday = <span class="code-keyword">false</span>;<br><br>
+<span class="code-keyword">if</span> (isWeekend || isHoliday) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Можно отдыхать"</span>);<br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Рабочий день"</span>);<br>
+}
+                        </div>
+
+                        <h3>Логическое НЕ (!)</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> isRaining = <span class="code-keyword">false</span>;<br><br>
+<span class="code-keyword">if</span> (!isRaining) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Можно гулять"</span>);<br>
+} <span class="code-keyword">else</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">"Лучше остаться дома"</span>);<br>
+}
+                        </div>
+
+                        <h3>Демонстрация логических операторов</h3>
+                        <div class="demo-area">
+                            <div>
+                                <input type="checkbox" id="hasTicket"> Есть билет
+                                <input type="checkbox" id="hasMoney" style="margin-left: 1rem;"> Есть деньги
+                                <input type="checkbox" id="isAdult" style="margin-left: 1rem;"> Совершеннолетний
+                            </div>
+                            <button onclick="checkCinema()" style="margin-top: 1rem;">Можно в кино?</button>
+                            <p id="cinemaOutput">Результат появится здесь</p>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: Условные конструкции</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="conditionalsQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Какой оператор используется для множественных условий?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> else if</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> elseif</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> elif</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Что делает оператор break в switch?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> Прерывает выполнение case</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> Завершает программу</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> Продолжает следующий case</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Как записать: если age больше 18, то "adult", иначе "child"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> age > 18 ? "adult" : "child"</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> age > 18 : "adult" ? "child"</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> age > 18 ? "child" : "adult"</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Что вернет: !true && false?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> false</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> true</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> undefined</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Как проверить, что x между 10 и 20?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> x > 10 && x < 20</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> x > 10 || x < 20</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> 10 < x > 20</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Что такое Falsy значение?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> Значение, которое приводится к false</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> Ложное значение</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> Оба варианта верны</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Какое значение НЕ является Falsy?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> 0</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> "0"</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> ""</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Что выполнится в switch без break?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> Следующий case</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> Только текущий case</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> default</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Как проверить, что строка не пустая?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> str !== ""</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> !!str</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> Оба варианта верны</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Что вернет: null || "default"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> "default"</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> null</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> true</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkConditionalsQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="operators.html" class="topic-btn" style="background: #95a5a6;">← Операторы</a>
+                        <a href="loops.html" class="topic-btn">Циклы →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Демонстрационные функции
+        function checkScore() {
+            const score = parseInt(document.getElementById('scoreInput').value);
+            const output = document.getElementById('scoreOutput');
+            
+            if (isNaN(score)) {
+                output.textContent = "Пожалуйста, введите число";
+                return;
+            }
+            
+            if (score >= 90) {
+                output.textContent = "Отлично! 🎉";
+            } else if (score >= 70) {
+                output.textContent = "Хорошо! 👍";
+            } else if (score >= 50) {
+                output.textContent = "Удовлетворительно 👌";
+            } else {
+                output.textContent = "Неудовлетворительно 😔";
+            }
+        }
+
+        function checkDay() {
+            const day = document.getElementById('daySelect').value;
+            const output = document.getElementById('dayOutput');
+            
+            switch (day) {
+                case "Monday":
+                    output.textContent = "Начало недели 💼";
+                    break;
+                case "Friday":
+                    output.textContent = "Конец недели 🎉";
+                    break;
+                case "Saturday":
+                case "Sunday":
+                    output.textContent = "Выходной! 🏖️";
+                    break;
+                default:
+                    output.textContent = "Обычный рабочий день 📅";
+            }
+        }
+
+        function checkAge() {
+            const age = parseInt(document.getElementById('ageInput').value);
+            const output = document.getElementById('ageOutput');
+            
+            if (isNaN(age)) {
+                output.textContent = "Пожалуйста, введите возраст";
+                return;
+            }
+            
+            const message = age >= 18 ? "Взрослый 👨" : "Ребенок 👶";
+            output.textContent = message;
+        }
+
+        function checkCinema() {
+            const hasTicket = document.getElementById('hasTicket').checked;
+            const hasMoney = document.getElementById('hasMoney').checked;
+            const isAdult = document.getElementById('isAdult').checked;
+            const output = document.getElementById('cinemaOutput');
+            
+            if ((hasTicket || hasMoney) && isAdult) {
+                output.textContent = "Можно в кино! 🎬";
+            } else {
+                output.textContent = "Нельзя в кино 😔";
+            }
+        }
+
+        function checkConditionalsQuiz() {
+            const correctAnswers = {
+                q1: 'a', // else if
+                q2: 'a', // Прерывает выполнение case
+                q3: 'a', // age > 18 ? "adult" : "child"
+                q4: 'a', // false
+                q5: 'a', // x > 10 && x < 20
+                q6: 'c', // Оба варианта верны
+                q7: 'b', // "0"
+                q8: 'a', // Следующий case
+                q9: 'c', // Оба варианта верны
+                q10: 'a' // "default"
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в условных конструкциях!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('conditionalsQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Объекты - Modern JS Guide</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+/* ваши стили остаются без изменений */
+.code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Courier New', monospace;
+    line-height: 1.5;
+    border-left: 4px solid #f39c12;
+}
+.code-comment { color: #6a9955; }
+.code-keyword { color: #569cd6; }
+.code-string { color: #ce9178; }
+.code-number { color: #b5cea8; }
+.code-function { color: #dcdcaa; }
+
+.quiz-container {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.question {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-left: 4px solid #f39c12;
+    background: #f8f9fa;
+    border-radius: 0 8px 8px 0;
+}
+.answers {
+    margin-top: 1rem;
+}
+.answer-label {
+    display: block;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.answer-label:hover {
+    background: #fff3e0;
+    border-color: #f39c12;
+}
+.answer-label input[type="radio"] {
+    margin-right: 10px;
+}
+.topic-content section {
+    margin-bottom: 3rem;
+}
+.topic-content h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+.topic-content h3 {
+    color: #f39c12;
+    margin: 1.5rem 0 1rem 0;
+}
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #ecf0f1;
+}
+.topic-btn {
+    display: inline-block;
+    background: #f39c12;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.topic-btn:hover {
+    background: #e67e22;
+}
+/* стили для демо-блоков */
+.demo-area {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 2px dashed #f39c12;
+}
+.demo-btn {
+    background: #f39c12;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+.demo-btn:hover {
+    background: #e67e22;
+}
+.demo-output {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    min-height: 60px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    white-space: pre-wrap;
+}
+.success {
+    color: #27ae60;
+    font-weight: bold;
+}
+.error {
+    color: #e74c3c;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header">
+<div class="header-content">
+<h1 class="logo">
+<span class="logo-icon">⚡</span>
+<span class="logo-text">Modern JS Guide</span>
+<span class="logo-subtitle">Объекты</span>
+</h1>
+<div class="search-container">
+<form class="search-form" id="searchForm">
+<input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input" />
+<button type="submit" class="search-btn">
+<span>🔍</span> Найти
+</button>
+</form>
+</div>
+</div>
+</header>
+
+<main class="main-content">
+<aside class="sidebar">
+<nav class="toc">
+<h3 class="toc-title">📚 Содержание</h3>
+<ul class="toc-list">
+<li><a href="#creation" class="toc-link active">Создание объектов</a></li>
+<li><a href="#properties" class="toc-link">Свойства и методы</a></li>
+<li><a href="#methods" class="toc-link">Методы объектов</a></li>
+<li><a href="#destructuring" class="toc-link">Деструктуризация</a></li>
+<li><a href="#quiz" class="toc-link">Тест</a></li>
+</ul>
+</nav>
+</aside>
+
+<div class="content">
+<article class="topic-content">
+<h1>🔧 Объекты</h1>
+
+<section id="creation">
+<h2>Создание объектов</h2>
+<h3>Литерал объекта</h3>
+<div class="code-block">
+const person = {<br>
+&nbsp;&nbsp;name: "John",<br>
+&nbsp;&nbsp;age: 30,<br>
+&nbsp;&nbsp;isStudent: false<br>
+};
+</div>
+<h3>Конструктор Object</h3>
+<div class="code-block">
+const car = new Object();<br>
+car.brand = "Toyota";<br>
+car.model = "Camry";
+</div>
+<h3>Object.create()</h3>
+<div class="code-block">
+const prototype = { type: "animal" };<br>
+const dog = Object.create(prototype);<br>
+dog.name = "Rex";
+</div>
+<!-- Демо-блок для создания объектов -->
+<div class="demo-area">
+<h4>🎮 Демонстрация создания объектов</h4>
+<button class="demo-btn" onclick="demoObjectCreation()">Показать создание объектов</button>
+<div id="creationDemo" class="demo-output">
+Нажмите кнопку, чтобы увидеть примеры создания объектов
+</div>
+</div>
+</section>
+
+<section id="properties">
+<h2>🎯 Свойства и методы</h2>
+<h3>Доступ к свойствам</h3>
+<div class="code-block">
+const person = { name: "John", age: 30 };<br><br>
+<span class="code-comment">// Точечная нотация</span><br>
+console.log(person.name); <span class="code-comment">// "John"</span><br><br>
+<span class="code-comment">// Скобочная нотация</span><br>
+console.log(person["age"]); <span class="code-comment">// 30</span><br><br>
+<span class="code-comment">// Динамическое имя свойства</span><br>
+const prop = "name";<br>
+console.log(person[prop]); <span class="code-comment">// "John"</span>
+</div>
+<h3>Вычисляемые свойства</h3>
+<div class="code-block">
+const propName = "firstName";<br>
+const user = {<br>
+&nbsp;&nbsp;[propName]: "John",<br>
+&nbsp;&nbsp;["last" + "Name"]: "Doe"<br>
+};<br><br>
+console.log(user.firstName); <span class="code-comment">// "John"</span><br>
+console.log(user.lastName); <span class="code-comment">// "Doe"</span>
+</div>
+<!-- Демо-блок для свойств -->
+<div class="demo-area">
+<h4>🎮 Демонстрация работы со свойствами</h4>
+<button class="demo-btn" onclick="demoProperties()">Доступ к свойствам</button>
+<button class="demo-btn" onclick="demoComputedProperties()">Вычисляемые свойства</button>
+<div id="propertiesDemo" class="demo-output">
+Выберите демо для просмотра
+</div>
+</div>
+</section>
+
+<section id="methods">
+<h2>⚙️ Методы объектов</h2>
+<h3>Сокращенный синтаксис методов</h3>
+<div class="code-block">
+const user = {<br>
+&nbsp;&nbsp;name: "Alice",<br>
+&nbsp;&nbsp;<span class="code-comment">// Старый синтаксис</span><br>
+&nbsp;&nbsp;greet: function() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return `Hello, ${this.name}!`;<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="code-comment">// Новый синтаксис</span><br>
+&nbsp;&nbsp;introduce() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return `I'm ${this.name}`;<br>
+&nbsp;&nbsp;}<br>
+};<br><br>
+user.greet(); <span class="code-comment">// "Hello, Alice!"</span><br>
+user.introduce(); <span class="code-comment">// "I'm Alice"</span>
+</div>
+<h3>Геттеры и сеттеры</h3>
+<div class="code-block">
+const person = {<br>
+&nbsp;&nbsp;firstName: "John",<br>
+&nbsp;&nbsp;lastName: "Doe",<br>
+&nbsp;&nbsp;<span class="code-keyword">get</span> fullName() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return `${this.firstName} ${this.lastName}`;<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="code-keyword">set</span> fullName(value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[this.firstName, this.lastName] = value.split(" ");<br>
+&nbsp;&nbsp;}<br>
+};<br><br>
+console.log(person.fullName); <span class="code-comment">// "John Doe"</span><br>
+person.fullName = "Jane Smith";<br>
+console.log(person.firstName); <span class="code-comment">// "Jane"</span>
+</div>
+<!-- Демо-блок для методов -->
+<div class="demo-area">
+<h4>🎮 Демонстрация методов объектов</h4>
+<button class="demo-btn" onclick="demoMethods()">Методы объектов</button>
+<button class="demo-btn" onclick="demoGettersSetters()">Геттеры и сеттеры</button>
+<div id="methodsDemo" class="demo-output">
+Выберите демо для просмотра
+</div>
+</div>
+</section>
+
+<section id="destructuring">
+<h2>🎁 Деструктуризация объектов</h2>
+<h3>Базовая деструктуризация</h3>
+<div class="code-block">
+const user = {<br>
+&nbsp;&nbsp;name: "John",<br>
+&nbsp;&nbsp;age: 30,<br>
+&nbsp;&nbsp;email: "john@example.com"<br>
+};<br><br>
+const { name, age } = user;<br>
+console.log(name); <span class="code-comment">// "John"</span><br>
+console.log(age); <span class="code-comment">// 30</span><br><br>
+<!-- С переименованием -->
+const { name: userName, age: userAge } = user;
+</div>
+<h3>Значения по умолчанию</h3>
+<div class="code-block">
+const { name, age, country = "Unknown" } = user;<br>
+console.log(country); <span class="code-comment">// "Unknown"</span>
+</div>
+<h3>Вложенная деструктуризация</h3>
+<div class="code-block">
+const company = {<br>
+&nbsp;&nbsp;name: "Tech Corp",<br>
+&nbsp;&nbsp;address: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;city: "New York",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;street: "5th Ave"<br>
+&nbsp;&nbsp;}<br>
+};<br><br>
+const { address: { city, street } } = company;<br>
+console.log(city); <span class="code-comment">// "New York"</span>
+</div>
+<!-- Демо-блок для деструктуризации -->
+<div class="demo-area">
+<h4>🎮 Демонстрация деструктуризации</h4>
+<button class="demo-btn" onclick="demoDestructuring()">Показать деструктуризацию</button>
+<div id="destructuringDemo" class="demo-output">
+Нажмите кнопку, чтобы увидеть примеры деструктуризации
+</div>
+</div>
+</section>
+
+<!-- Вставляем раздел с тестом из 10 вопросов -->
+<section id="quiz" class="quiz-container">
+<h2>🎯 Тест: Объекты</h2>
+<p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+
+<form id="objectsQuiz">
+<!-- Вопрос 1 -->
+<div class="question">
+<p>1. Как получить значение свойства 'email' из объекта user?</p>
+<label class="answer-label">
+<input type="radio" name="q1" value="a" /> user.email
+</label>
+<label class="answer-label">
+<input type="radio" name="q1" value="b" /> user["email"]
+</label>
+<label class="answer-label">
+<input type="radio" name="q1" value="c" /> user.get("email")
+</label>
+</div>
+<!-- Вопрос 2 -->
+<div class="question">
+<p>2. Какой метод используется для получения массива ключей объекта?</p>
+<label class="answer-label">
+<input type="radio" name="q2" value="a" /> Object.values()
+</label>
+<label class="answer-label">
+<input type="radio" name="q2" value="b" /> Object.keys()
+</label>
+<label class="answer-label">
+<input type="radio" name="q2" value="c" /> Object.entries()
+</label>
+</div>
+<!-- Вопрос 3 -->
+<div class="question">
+<p>3. Как создать объект с динамическими именами свойств?</p>
+<label class="answer-label">
+<input type="radio" name="q3" value="a" /> const obj = { [propName]: value };
+</label>
+<label class="answer-label">
+<input type="radio" name="q3" value="b" /> const obj = { "propName": value };
+</label>
+<label class="answer-label">
+<input type="radio" name="q3" value="c" /> const obj = Object.create({ propName: value });
+</label>
+</div>
+<!-- Вопрос 4 -->
+<div class="question">
+<p>4. Какое значение возвращает Object.assign({}, obj)?</p>
+<label class="answer-label">
+<input type="radio" name="q4" value="a" /> Новый объект с копией свойств obj
+</label>
+<label class="answer-label">
+<input type="radio" name="q4" value="b" /> Сам объект obj
+</label>
+<label class="answer-label">
+<input type="radio" name="q4" value="c" /> Массив свойств объекта
+</label>
+</div>
+<!-- Вопрос 5 -->
+<div class="question">
+<p>5. Что возвращает Object.keys(obj)?</p>
+<label class="answer-label">
+<input type="radio" name="q5" value="a" /> Массив ключей объекта
+</label>
+<label class="answer-label">
+<input type="radio" name="q5" value="b" /> Массив значений объекта
+</label>
+<label class="answer-label">
+<input type="radio" name="q5" value="c" /> Объект с ключами
+</label>
+</div>
+<!-- Вопрос 6 -->
+<div class="question">
+<p>6. Что происходит при присвоении obj = anotherObj?</p>
+<label class="answer-label">
+<input type="radio" name="q6" value="a" /> Создается копия другого объекта
+</label>
+<label class="answer-label">
+<input type="radio" name="q6" value="b" /> Обе переменные ссылаются на один объект
+</label>
+<label class="answer-label">
+<input type="radio" name="q6" value="c" /> Создается новый уникальный объект
+</label>
+</div>
+<!-- Вопрос 7 -->
+<div class="question">
+<p>7. Как проверить, существует ли свойство 'prop' у объекта obj?</p>
+<label class="answer-label">
+<input type="radio" name="q7" value="a" /> "prop" in obj
+</label>
+<label class="answer-label">
+<input type="radio" name="q7" value="b" /> obj.hasOwnProperty("prop")
+</label>
+<label class="answer-label">
+<input type="radio" name="q7" value="c" /> Все вышеперечисленное
+</label>
+</div>
+<!-- Вопрос 8 -->
+<div class="question">
+<p>8. Как удалить свойство 'prop' из объекта obj?</p>
+<label class="answer-label">
+<input type="radio" name="q8" value="a" /> delete obj.prop
+</label>
+<label class="answer-label">
+<input type="radio" name="q8" value="b" /> remove obj.prop
+</label>
+<label class="answer-label">
+<input type="radio" name="q8" value="c" /> obj.delete("prop")
+</label>
+</div>
+<!-- Вопрос 9 -->
+<div class="question">
+<p>9. Как получить все ключи объекта?</p>
+<label class="answer-label">
+<input type="radio" name="q9" value="a" /> Object.keys(obj)
+</label>
+<label class="answer-label">
+<input type="radio" name="q9" value="b" /> Object.values(obj)
+</label>
+<label class="answer-label">
+<input type="radio" name="q9" value="c" /> Object.entries(obj)
+</label>
+</div>
+<!-- Вопрос 10 -->
+<div class="question">
+<p>10. Как извлечь значения из объекта в переменные?</p>
+<label class="answer-label">
+<input type="radio" name="q10" value="a" /> Деструктуризация: const { prop1, prop2 } = obj;
+</label>
+<label class="answer-label">
+<input type="radio" name="q10" value="b" /> obj.getValues()
+</label>
+<label class="answer-label">
+<input type="radio" name="q10" value="c" /> Object.extract(obj)
+</label>
+</div>
+
+<button type="button" class="topic-btn" onclick="checkObjectsQuiz()" style="margin-top: 2rem;">Проверить ответы</button>
+</form>
+
+<div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+<h3>Результат теста</h3>
+<p id="resultText"></p>
+<button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">Пройти тест снова</button>
+</div>
+</section>
+
+<!-- Остальной ваш код остаётся без изменений -->
+<div class="nav-buttons">
+<a href="functions.html" class="topic-btn" style="background: #95a5a6;">← Функции</a>
+<a href="arrays.html" class="topic-btn">Массивы →</a>
+</div>
+
+</article>
+</div>
+</main>
+<footer class="footer">
+<div class="footer-content">
+<div class="footer-section">
+<h4>Modern JS Guide</h4>
+<p>Изучайте JavaScript с удовольствием!</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2025 Modern JS Guide</p>
+</div>
+</footer>
+</div>
+
+<script src="script.js"></script>
+<script>
+// ваши функции для демонстрации остались без изменений
+function demoObjectCreation() {
+    const output = document.getElementById('creationDemo');
+
+    const person = { name: "John", age: 30, isStudent: false };
+    const car = new Object();
+    car.brand = "Toyota";
+    car.model = "Camry";
+
+    const prototype = { type: "animal" };
+    const dog = Object.create(prototype);
+    dog.name = "Rex";
+
+    output.innerHTML = `
+<span class="success">✅ Создание объектов разными способами:</span>
+
+<span class="success">1. Литерал объекта:</span>
+const person = { name: "John", age: 30, isStudent: false };
+Результат: ${JSON.stringify(person)}
+
+<span class="success">2. Конструктор Object:</span>
+const car = new Object();
+car.brand = "Toyota";
+car.model = "Camry";
+Результат: ${JSON.stringify(car)}
+
+<span class="success">3. Object.create():</span>
+const prototype = { type: "animal" };
+const dog = Object.create(prototype);
+dog.name = "Rex";
+Результат: ${JSON.stringify(dog)}
+Прототип: ${dog.type}
+            `;
+}
+
+function demoProperties() {
+    const output = document.getElementById('propertiesDemo');
+    const person = { name: "John", age: 30 };
+    const prop = "name";
+
+    output.innerHTML = `
+<span class="success">✅ Доступ к свойствам объекта:</span>
+
+Объект: ${JSON.stringify(person)}
+
+<span class="success">Точечная нотация:</span>
+person.name = "${person.name}"
+
+<span class="success">Скобочная нотация:</span>
+person['age'] = ${person['age']}
+
+<span class="success">Динамический доступ:</span>
+const prop = "name"
+person[prop] = "${person[prop]}"
+    `;
+}
+
+function demoComputedProperties() {
+    const output = document.getElementById('propertiesDemo');
+    const propName = "firstName";
+    const user = {
+        [propName]: "John",
+        ["last" + "Name"]: "Doe"
+    };
+
+    output.innerHTML = `
+<span class="success">✅ Вычисляемые свойства:</span>
+
+Код:
+const propName = "firstName";
+const user = {
+    [propName]: "John",
+    ["last" + "Name"]: "Doe"
+};
+
+<span class="success">Результат:</span>
+${JSON.stringify(user, null, 2)}
+
+<span class="success">Доступ к свойствам:</span>
+user.firstName = "${user.firstName}"
+user.lastName = "${user.lastName}"
+    `;
+}
+
+function demoMethods() {
+    const output = document.getElementById('methodsDemo');
+    const user = {
+        name: "Alice",
+        greet: function() {
+            return `Hello, ${this.name}!`;
+        },
+        introduce() {
+            return `I'm ${this.name}`;
+        }
+    };
+
+    output.innerHTML = `
+<span class="success">✅ Методы объектов:</span>
+
+Объект с методами:
+const user = {
+    name: "Alice",
+    greet: function() { ... },
+    introduce() { ... }
+};
+
+<span class="success">Вызов методов:</span>
+user.greet() = "${user.greet()}"
+user.introduce() = "${user.introduce()}"
+
+<span class="success">Значение this:</span>
+В методах 'this' ссылается на сам объект
+    `;
+}
+
+function demoGettersSetters() {
+    const output = document.getElementById('methodsDemo');
+    const person = {
+        firstName: "John",
+        lastName: "Doe",
+        get fullName() {
+            return `${this.firstName} ${this.lastName}`;
+        },
+        set fullName(value) {
+            [this.firstName, this.lastName] = value.split(" ");
+        }
+    };
+
+    output.innerHTML = `
+<span class="success">✅ Геттеры и сеттеры:</span>
+
+Исходный объект:
+firstName: "${person.firstName}"
+lastName: "${person.lastName}"
+
+<span class="success">Геттер fullName:</span>
+person.fullName = "${person.fullName}"
+
+<span class="success">Устанавливаем новое значение через сеттер:</span>
+person.fullName = "Jane Smith"
+
+<span class="success">Результат:</span>
+firstName: "${person.firstName}"
+lastName: "${person.lastName}"
+fullName: "${person.fullName}"
+    `;
+}
+
+function demoDestructuring() {
+    const output = document.getElementById('destructuringDemo');
+    const user = {
+        name: "John",
+        age: 30,
+        email: "john@example.com"
+    };
+
+    const company = {
+        name: "Tech Corp",
+        address: {
+            city: "New York",
+            street: "5th Ave"
+        }
+    };
+
+    // Деструктуризация
+    const { name, age } = user;
+    const { name: userName, age: userAge } = user;
+    const { address: { city, street } } = company;
+    const { name: companyName, country = "USA" } = company;
+
+    output.innerHTML = `
+<span class="success">✅ Деструктуризация объектов:</span>
+
+<span class="success">Исходные объекты:</span>
+user = ${JSON.stringify(user)}
+company = ${JSON.stringify(company)}
+
+<span class="success">1. Базовая деструктуризация:</span>
+const { name, age } = user;
+name = "${name}", age = ${age}
+
+<span class="success">2. С переименованием:</span>
+const { name: userName, age: userAge } = user;
+userName = "${userName}", userAge = ${userAge}
+
+<span class="success">3. Вложенная деструктуризация:</span>
+const { address: { city, street } } = company;
+city = "${city}", street = "${street}"
+
+<span class="success">4. Значения по умолчанию:</span>
+const { country = "USA" } = company;
+country = "${country}"
+    `;
+}
+
+// функции проверки теста
+function checkObjectsQuiz() {
+    const correctAnswers = {
+        q1: 'b',
+        q2: 'b',
+        q3: 'a',
+        q4: 'a',
+        q5: 'a',
+        q6: 'b',
+        q7: 'c',
+        q8: 'a',
+        q9: 'a',
+        q10: 'a'
+    };
+    let score = 0;
+    const total = Object.keys(correctAnswers).length;
+
+    for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected && selected.value === correctAnswer) {
+            score++;
+            selected.parentElement.style.background = '#e8f5e9';
+            selected.parentElement.style.borderColor = '#27ae60';
+        } else if (selected) {
+            selected.parentElement.style.background = '#ffebee';
+            selected.parentElement.style.borderColor = '#e74c3c';
+        }
+    }
+
+    const percentage = (score / total) * 100;
+    const resultDiv = document.getElementById('quizResult');
+    const resultText = document.getElementById('resultText');
+
+    resultText.innerHTML = `
+        Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+        ${percentage >= 80 ? 
+            '🎉 Отлично! Вы прекрасно разбираетесь в объектах!' : 
+        percentage >= 60 ?
+            '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+            '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+        }
+    `;
+    resultDiv.style.display = 'block';
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(r => {
+        r.checked = false;
+        r.parentElement.style.background = 'white';
+        r.parentElement.style.borderColor = '#e9ecef';
+    });
+    document.getElementById('quizResult').style.display = 'none';
+}
+</script>
+</body>
+</html>

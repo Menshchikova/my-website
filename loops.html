@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Циклы - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #e67e22;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #e67e22;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #fbeee6;
+            border-color: #e67e22;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #e67e22;
+        }
+        
+        .loop-output {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 1rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Циклы</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#for" class="toc-link active">Цикл for</a></li>
+                        <li><a href="#while" class="toc-link">Циклы while</a></li>
+                        <li><a href="#for-of" class="toc-link">for...of</a></li>
+                        <li><a href="#for-in" class="toc-link">for...in</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🔄 Циклы</h1>
+                    
+                    <section id="for">
+                        <h2>🔁 Цикл for</h2>
+                        
+                        <h3>Базовый синтаксис</h3>
+                        <div class="code-block">
+<span class="code-comment">// for (инициализация; условие; шаг) { ... }</span><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < <span class="code-number">5</span>; i++) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(i);<br>
+}<br>
+<span class="code-comment">// Выведет: 0, 1, 2, 3, 4</span>
+                        </div>
+
+                        <h3>Обратный цикл</h3>
+                        <div class="code-block">
+<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">5</span>; i > <span class="code-number">0</span>; i--) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(i);<br>
+}<br>
+<span class="code-comment">// Выведет: 5, 4, 3, 2, 1</span>
+                        </div>
+
+                        <h3>Цикл с шагом 2</h3>
+                        <div class="code-block">
+<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < <span class="code-number">10</span>; i += <span class="code-number">2</span>) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(i);<br>
+}<br>
+<span class="code-comment">// Выведет: 0, 2, 4, 6, 8</span>
+                        </div>
+
+                        <h3>Демонстрация цикла for</h3>
+                        <div class="demo-area">
+                            <button onclick="demoForLoop()">Запустить цикл for</button>
+                            <button onclick="demoForReverse()">Обратный цикл</button>
+                            <button onclick="demoForStep()">Цикл с шагом</button>
+                            <div class="loop-output" id="forOutput">Результат появится здесь...</div>
+                        </div>
+                    </section>
+
+                    <section id="while">
+                        <h2>⏱️ Циклы while и do...while</h2>
+                        
+                        <h3>Цикл while</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> i = <span class="code-number">0</span>;<br>
+<span class="code-keyword">while</span> (i < <span class="code-number">5</span>) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(i);<br>
+&nbsp;&nbsp;i++;<br>
+}<br>
+<span class="code-comment">// Выведет: 0, 1, 2, 3, 4</span>
+                        </div>
+
+                        <h3>Цикл do...while</h3>
+                        <div class="code-block">
+<span class="code-keyword">let</span> i = <span class="code-number">0</span>;<br>
+<span class="code-keyword">do</span> {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(i);<br>
+&nbsp;&nbsp;i++;<br>
+} <span class="code-keyword">while</span> (i < <span class="code-number">5</span>);<br>
+<span class="code-comment">// Выведет: 0, 1, 2, 3, 4</span>
+                        </div>
+
+                        <h3>Бесконечный цикл (осторожно!)</h3>
+                        <div class="code-block">
+<span class="code-comment">// while (true) { ... } - бесконечный цикл</span><br>
+<span class="code-comment">// Всегда добавляйте условие выхода!</span><br>
+<span class="code-keyword">let</span> counter = <span class="code-number">0</span>;<br>
+<span class="code-keyword">while</span> (<span class="code-keyword">true</span>) {<br>
+&nbsp;&nbsp;counter++;<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (counter > <span class="code-number">100</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>; <span class="code-comment">// Выход из цикла</span><br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Демонстрация циклов while</h3>
+                        <div class="demo-area">
+                            <button onclick="demoWhileLoop()">Запустить while</button>
+                            <button onclick="demoDoWhile()">Запустить do...while</button>
+                            <button onclick="demoBreakContinue()">break и continue</button>
+                            <div class="loop-output" id="whileOutput">Результат появится здесь...</div>
+                        </div>
+                    </section>
+
+                    <section id="for-of">
+                        <h2>📦 Цикл for...of</h2>
+                        
+                        <h3>Итерация по массивам</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> fruits = [<span class="code-string">"apple"</span>, <span class="code-string">"banana"</span>, <span class="code-string">"orange"</span>];<br><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> fruit <span class="code-keyword">of</span> fruits) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(fruit);<br>
+}<br>
+<span class="code-comment">// Выведет: "apple", "banana", "orange"</span>
+                        </div>
+
+                        <h3>Итерация по строкам</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> text = <span class="code-string">"Hello"</span>;<br><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> char <span class="code-keyword">of</span> text) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(char);<br>
+}<br>
+<span class="code-comment">// Выведет: "H", "e", "l", "l", "o"</span>
+                        </div>
+
+                        <h3>Получение индекса с entries()</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> colors = [<span class="code-string">"red"</span>, <span class="code-string">"green"</span>, <span class="code-string">"blue"</span>];<br><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> [index, color] <span class="code-keyword">of</span> colors.<span class="code-function">entries</span>()) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">`<span class="code-keyword">${</span>index<span class="code-keyword">}</span>: <span class="code-keyword">${</span>color<span class="code-keyword">}</span>`</span>);<br>
+}<br>
+<span class="code-comment">// Выведет: "0: red", "1: green", "2: blue"</span>
+                        </div>
+
+                        <h3>Демонстрация for...of</h3>
+                        <div class="demo-area">
+                            <button onclick="demoForOfArray()">Массив for...of</button>
+                            <button onclick="demoForOfString()">Строка for...of</button>
+                            <button onclick="demoForOfEntries()">С индексами</button>
+                            <div class="loop-output" id="forOfOutput">Результат появится здесь...</div>
+                        </div>
+                    </section>
+
+                    <section id="for-in">
+                        <h2>🔑 Цикл for...in</h2>
+                        
+                        <h3>Итерация по свойствам объекта</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> person = {<br>
+&nbsp;&nbsp;name: <span class="code-string">"John"</span>,<br>
+&nbsp;&nbsp;age: <span class="code-number">30</span>,<br>
+&nbsp;&nbsp;city: <span class="code-string">"New York"</span><br>
+};<br><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> key <span class="code-keyword">in</span> person) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">`<span class="code-keyword">${</span>key<span class="code-keyword">}</span>: <span class="code-keyword">${</span>person[key]<span class="code-keyword">}</span>`</span>);<br>
+}<br>
+<span class="code-comment">// Выведет: "name: John", "age: 30", "city: New York"</span>
+                        </div>
+
+                        <h3>Проверка собственных свойств</h3>
+                        <div class="code-block">
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> key <span class="code-keyword">in</span> person) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (person.<span class="code-function">hasOwnProperty</span>(key)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(key, person[key]);<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+
+                        <h3>Различие for...of и for...in</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> arr = [<span class="code-string">"a"</span>, <span class="code-string">"b"</span>, <span class="code-string">"c"</span>];<br><br>
+<span class="code-comment">// for...of - значения</span><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> value <span class="code-keyword">of</span> arr) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(value); <span class="code-comment">// "a", "b", "c"</span><br>
+}<br><br>
+<span class="code-comment">// for...in - индексы</span><br>
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> index <span class="code-keyword">in</span> arr) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(index); <span class="code-comment">// "0", "1", "2"</span><br>
+}
+                        </div>
+
+                        <h3>Демонстрация for...in</h3>
+                        <div class="demo-area">
+                            <button onclick="demoForInObject()">Объект for...in</button>
+                            <button onclick="demoForInArray()">Массив for...in</button>
+                            <button onclick="demoCompareLoops()">Сравнение циклов</button>
+                            <div class="loop-output" id="forInOutput">Результат появится здесь...</div>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: Циклы</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="loopsQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Какой цикл гарантированно выполнится хотя бы один раз?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> while</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> do...while</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> for</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Что делает оператор break в цикле?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> Прерывает выполнение цикла</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> Переходит к следующей итерации</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> Пропускает текущую итерацию</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Какой цикл используется для перебора элементов массива?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> for...in</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> for...of</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> Оба варианта</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Что выведет: for (let i = 0; i < 3; i++) { console.log(i) }?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> 0, 1, 2</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> 1, 2, 3</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> 0, 1, 2, 3</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Какой оператор пропускает текущую итерацию цикла?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> break</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> continue</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> skip</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Как перебрать свойства объекта?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> for...of</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> for...in</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> forEach</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Что такое бесконечный цикл?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> Цикл без условия выхода</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> Цикл с большим количеством итераций</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> Быстрый цикл</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Как получить и индекс и значение в for...of?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> entries()</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> keys()</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> values()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Какой цикл НЕ существует в JavaScript?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> for...in</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> for...each</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> do...while</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Что выведет: let i=0; while(i<3) { i++; console.log(i) }?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> 0, 1, 2</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> 1, 2, 3</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> 0, 1, 2, 3</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkLoopsQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="conditionals.html" class="topic-btn" style="background: #95a5a6;">← Условные конструкции</a>
+                        <a href="functions.html" class="topic-btn">Функции →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Демонстрационные функции для циклов
+        function demoForLoop() {
+            const output = document.getElementById('forOutput');
+            output.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                output.innerHTML += `i = ${i}<br>`;
+            }
+        }
+
+        function demoForReverse() {
+            const output = document.getElementById('forOutput');
+            output.innerHTML = '';
+            
+            for (let i = 5; i > 0; i--) {
+                output.innerHTML += `i = ${i}<br>`;
+            }
+        }
+
+        function demoForStep() {
+            const output = document.getElementById('forOutput');
+            output.innerHTML = '';
+            
+            for (let i = 0; i < 10; i += 2) {
+                output.innerHTML += `i = ${i}<br>`;
+            }
+        }
+
+        function demoWhileLoop() {
+            const output = document.getElementById('whileOutput');
+            output.innerHTML = '';
+            let i = 0;
+            
+            while (i < 5) {
+                output.innerHTML += `i = ${i}<br>`;
+                i++;
+            }
+        }
+
+        function demoDoWhile() {
+            const output = document.getElementById('whileOutput');
+            output.innerHTML = '';
+            let i = 0;
+            
+            do {
+                output.innerHTML += `i = ${i}<br>`;
+                i++;
+            } while (i < 5);
+        }
+
+        function demoBreakContinue() {
+            const output = document.getElementById('whileOutput');
+            output.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                if (i === 3) continue; // Пропустить 3
+                if (i === 7) break;    // Остановиться на 7
+                output.innerHTML += `i = ${i}<br>`;
+            }
+        }
+
+        function demoForOfArray() {
+            const output = document.getElementById('forOfOutput');
+            output.innerHTML = '';
+            const fruits = ["🍎", "🍌", "🍊", "🍇"];
+            
+            for (const fruit of fruits) {
+                output.innerHTML += `${fruit}<br>`;
+            }
+        }
+
+        function demoForOfString() {
+            const output = document.getElementById('forOfOutput');
+            output.innerHTML = '';
+            const text = "JavaScript";
+            
+            for (const char of text) {
+                output.innerHTML += `${char} `;
+            }
+        }
+
+        function demoForOfEntries() {
+            const output = document.getElementById('forOfOutput');
+            output.innerHTML = '';
+            const colors = ["red", "green", "blue"];
+            
+            for (const [index, color] of colors.entries()) {
+                output.innerHTML += `${index}: ${color}<br>`;
+            }
+        }
+
+        function demoForInObject() {
+            const output = document.getElementById('forInOutput');
+            output.innerHTML = '';
+            const person = {
+                name: "Анна",
+                age: 25,
+                city: "Москва"
+            };
+            
+            for (const key in person) {
+                output.innerHTML += `${key}: ${person[key]}<br>`;
+            }
+        }
+
+        function demoForInArray() {
+            const output = document.getElementById('forInOutput');
+            output.innerHTML = '';
+            const arr = ["a", "b", "c"];
+            
+            output.innerHTML += "for...in (индексы):<br>";
+            for (const index in arr) {
+                output.innerHTML += `${index} `;
+            }
+            
+            output.innerHTML += "<br>for...of (значения):<br>";
+            for (const value of arr) {
+                output.innerHTML += `${value} `;
+            }
+        }
+
+        function demoCompareLoops() {
+            const output = document.getElementById('forInOutput');
+            output.innerHTML = '';
+            const data = [10, 20, 30];
+            
+            output.innerHTML += "for цикл:<br>";
+            for (let i = 0; i < data.length; i++) {
+                output.innerHTML += `data[${i}] = ${data[i]}<br>`;
+            }
+            
+            output.innerHTML += "<br>for...of цикл:<br>";
+            for (const value of data) {
+                output.innerHTML += `value = ${value}<br>`;
+            }
+        }
+
+        function checkLoopsQuiz() {
+            const correctAnswers = {
+                q1: 'b', // do...while
+                q2: 'a', // Прерывает выполнение цикла
+                q3: 'b', // for...of
+                q4: 'a', // 0, 1, 2
+                q5: 'b', // continue
+                q6: 'b', // for...in
+                q7: 'a', // Цикл без условия выхода
+                q8: 'a', // entries()
+                q9: 'b', // for...each
+                q10: 'b' // 1, 2, 3
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в циклах!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('loopsQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>События - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #e67e22;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #e67e22;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #fbeee6;
+            border-color: #e67e22;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .topic-content section {
+            margin-bottom: 3rem;
+        }
+        
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .topic-content h3 {
+            color: #e67e22;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .topic-btn {
+            display: inline-block;
+            background: #e67e22;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .topic-btn:hover {
+            background: #d35400;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #e67e22;
+        }
+        
+        .event-demo {
+            padding: 20px;
+            margin: 10px 0;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .event-demo:hover {
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">События</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#basics" class="toc-link active">Основы событий</a></li>
+                        <li><a href="#types" class="toc-link">Типы событий</a></li>
+                        <li><a href="#delegation" class="toc-link">Делегирование</a></li>
+                        <li><a href="#prevention" class="toc-link">Отмена действий</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🎯 События</h1>
+                    
+                    <section id="basics">
+                        <h2>Основы работы с событиями</h2>
+                        
+                        <h3>Способы добавления обработчиков</h3>
+                        <div class="code-block">
+<span class="code-comment">// 1. HTML атрибут (не рекомендуется)</span><br>
+<span class="code-comment">&lt;button onclick="handleClick()"&gt;Клик&lt;/button&gt;</span><br><br>
+<span class="code-comment">// 2. Свойство элемента</span><br>
+button.onclick = <span class="code-keyword">function</span>() {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клик!'</span>);<br>
+};<br><br>
+<span class="code-comment">// 3. addEventListener (рекомендуется)</span><br>
+button.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клик!'</span>, event);<br>
+});
+                        </div>
+                        
+                        <h3>Объект event</h3>
+                        <div class="code-block">
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(event.type);     <span class="code-comment">// "click"</span><br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(event.target);   <span class="code-comment">// Элемент, на котором произошло событие</span><br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(event.clientX);  <span class="code-comment">// Координата X курсора</span><br>
+&nbsp;&nbsp;event.<span class="code-function">preventDefault</span>();      <span class="code-comment">// Отменить действие по умолчанию</span><br>
+&nbsp;&nbsp;event.<span class="code-function">stopPropagation</span>();     <span class="code-comment">// Остановить всплытие</span><br>
+});
+                        </div>
+
+                        <h3>Демонстрация событий</h3>
+                        <div class="demo-area">
+                            <div class="event-demo" id="clickDemo">Кликни на меня!</div>
+                            <div class="event-demo" id="mouseDemo">Наведи курсор</div>
+                            <button id="preventDemo">Кнопка с preventDefault()</button>
+                            <p id="eventOutput">Здесь будет информация о событиях</p>
+                        </div>
+                    </section>
+
+                    <section id="types">
+                        <h2>📋 Типы событий</h2>
+                        
+                        <h3>События мыши</h3>
+                        <div class="code-block">
+<span class="code-comment">// Основные события мыши</span><br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, handleClick);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'dblclick'</span>, handleDoubleClick);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'mousedown'</span>, handleMouseDown);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'mouseup'</span>, handleMouseUp);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'mousemove'</span>, handleMouseMove);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'mouseenter'</span>, handleMouseEnter);<br>
+element.<span class="code-function">addEventListener</span>(<span class="code-string">'mouseleave'</span>, handleMouseLeave);
+                        </div>
+
+                        <h3>События клавиатуры</h3>
+                        <div class="code-block">
+document.<span class="code-function">addEventListener</span>(<span class="code-string">'keydown'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клавиша нажата:'</span>, event.key);<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Код клавиши:'</span>, event.code);<br>
+});<br><br>
+document.<span class="code-function">addEventListener</span>(<span class="code-string">'keyup'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клавиша отпущена:'</span>, event.key);<br>
+});
+                        </div>
+
+                        <h3>События форм</h3>
+                        <div class="code-block">
+form.<span class="code-function">addEventListener</span>(<span class="code-string">'submit'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;event.<span class="code-function">preventDefault</span>(); <span class="code-comment">// Отменить отправку формы</span><br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Форма отправлена!'</span>);<br>
+});<br><br>
+input.<span class="code-function">addEventListener</span>(<span class="code-string">'input'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Значение изменилось:'</span>, event.target.value);<br>
+});<br><br>
+input.<span class="code-function">addEventListener</span>(<span class="code-string">'change'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Значение окончательно изменено:'</span>, event.target.value);<br>
+});
+                        </div>
+
+                        <h3>Демонстрация разных событий</h3>
+                        <div class="demo-area">
+                            <input type="text" id="keyboardDemo" placeholder="Печатай здесь...">
+                            <p id="keyOutput">Нажми любую клавишу</p>
+                            
+                            <form id="formDemo">
+                                <input type="text" placeholder="Введите текст">
+                                <button type="submit">Отправить</button>
+                            </form>
+                            <p id="formOutput">Информация о форме</p>
+                        </div>
+                    </section>
+
+                    <section id="delegation">
+                        <h2>🎪 Делегирование событий</h2>
+                        
+                        <h3>Проблема множественных обработчиков</h3>
+                        <div class="code-block">
+<span class="code-comment">// ПЛОХО: добавляем обработчик каждому элементу</span><br>
+<span class="code-keyword">const</span> items = document.<span class="code-function">querySelectorAll</span>(<span class="code-string">'.item'</span>);<br>
+items.<span class="code-function">forEach</span>(item => {<br>
+&nbsp;&nbsp;item.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, handleItemClick);<br>
+});
+                        </div>
+
+                        <h3>Решение через делегирование</h3>
+                        <div class="code-block">
+<span class="code-comment">// ХОРОШО: один обработчик на родителе</span><br>
+list.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (event.target.tagName === <span class="code-string">'LI'</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клик на элементе списка:'</span>, event.target.textContent);<br>
+&nbsp;&nbsp;}<br>
+});
+                        </div>
+
+                        <h3>Демонстрация делегирования</h3>
+                        <div class="demo-area">
+                            <ul id="delegationDemo">
+                                <li>Элемент 1</li>
+                                <li>Элемент 2</li>
+                                <li>Элемент 3</li>
+                                <li>Элемент 4</li>
+                            </ul>
+                            <button onclick="addListItem()">Добавить элемент</button>
+                            <p id="delegationOutput">Кликни на элемент списка</p>
+                        </div>
+                    </section>
+
+                    <section id="prevention">
+                        <h2>🚫 Отмена стандартных действий</h2>
+                        
+                        <h3>preventDefault()</h3>
+                        <div class="code-block">
+<span class="code-comment">// Отмена отправки формы</span><br>
+form.<span class="code-function">addEventListener</span>(<span class="code-string">'submit'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;event.<span class="code-function">preventDefault</span>();<br>
+&nbsp;&nbsp;<span class="code-comment">// Дополнительная логика</span><br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Форма не отправлена'</span>);<br>
+});<br><br>
+<span class="code-comment">// Отмена перехода по ссылке</span><br>
+link.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;event.<span class="code-function">preventDefault</span>();<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Переход отменен'</span>);<br>
+});
+                        </div>
+
+                        <h3>stopPropagation()</h3>
+                        <div class="code-block">
+<span class="code-comment">// Всплытие событий</span><br>
+parent.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>() {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клик на родителе'</span>);<br>
+});<br><br>
+child.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, <span class="code-keyword">function</span>(event) {<br>
+&nbsp;&nbsp;console.<span class="code-function">log</span>(<span class="code-string">'Клик на потомке'</span>);<br>
+&nbsp;&nbsp;event.<span class="code-function">stopPropagation</span>(); <span class="code-comment">// Остановит всплытие</span><br>
+});
+                        </div>
+
+                        <h3>Демонстрация отмены действий</h3>
+                        <div class="demo-area">
+                            <div id="bubbleParent" style="padding: 20px; background: #e74c3c; color: white;">
+                                Родительский элемент
+                                <div id="bubbleChild" style="padding: 10px; background: #3498db; margin: 10px;">
+                                    Дочерний элемент (кликни)
+                                </div>
+                            </div>
+                            <a href="https://example.com" id="preventLink">Ссылка с preventDefault()</a>
+                            <p id="preventionOutput">Информация о всплытии</p>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: События</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="eventsQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Какой метод рекомендуется для добавления обработчиков?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> onclick атрибут</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> element.onclick</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> addEventListener</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Что такое делегирование событий?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> Добавление одного обработчика на родителя</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> Использование нескольких обработчиков</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> Удаление всех обработчиков</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Как отменить действие по умолчанию?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> event.preventDefault()</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> event.stopDefault()</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> event.cancelDefault()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Как остановить всплытие события?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> event.stopPropagation()</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> event.preventDefault()</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> event.stopBubble()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Что такое event.target?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> Элемент, на котором произошло событие</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> Элемент, на котором висит обработчик</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> Всегда document</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Какое событие происходит при вводе текста?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> input</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> change</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> keypress</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Как удалить обработчик события?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> removeEventListener</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> deleteEventListener</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> clearEventListener</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Что такое фаза перехвата?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> Событие идет сверху вниз</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> Событие идет снизу вверх</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> Событие не распространяется</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Как получить код нажатой клавиши?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> event.code</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> event.keyCode</span></label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> event.charCode</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Что такое IIFE в контексте событий?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> Immediately Invoked Function Expression</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> Instant Initialization Function Event</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> Internal Integrated Function Element</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkEventsQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="dom.html" class="topic-btn" style="background: #95a5a6;">← DOM</a>
+                        <a href="async.html" class="topic-btn">Асинхронность →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Инициализация демонстрационных обработчиков
+        document.addEventListener('DOMContentLoaded', function() {
+            // Клик демо
+            document.getElementById('clickDemo').addEventListener('click', function(e) {
+                document.getElementById('eventOutput').textContent = 
+                    `Клик! Координаты: ${e.clientX}, ${e.clientY}`;
+            });
+
+            // Мышь демо
+            document.getElementById('mouseDemo').addEventListener('mouseenter', function() {
+                document.getElementById('eventOutput').textContent = 'Курсор над элементом!';
+            });
+
+            document.getElementById('mouseDemo').addEventListener('mouseleave', function() {
+                document.getElementById('eventOutput').textContent = 'Курсор ушел с элемента!';
+            });
+
+            // PreventDefault демо
+            document.getElementById('preventDemo').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('eventOutput').textContent = 'Default action prevented!';
+            });
+
+            // Клавиатура демо
+            document.getElementById('keyboardDemo').addEventListener('keydown', function(e) {
+                document.getElementById('keyOutput').textContent = 
+                    `Нажата клавиша: ${e.key} (код: ${e.code})`;
+            });
+
+            // Форма демо
+            document.getElementById('formDemo').addEventListener('submit', function(e) {
+                e.preventDefault();
+                document.getElementById('formOutput').textContent = 'Форма отправлена (но отменена)!';
+            });
+
+            // Делегирование демо
+            document.getElementById('delegationDemo').addEventListener('click', function(e) {
+                if (e.target.tagName === 'LI') {
+                    document.getElementById('delegationOutput').textContent = 
+                        `Кликнут: ${e.target.textContent}`;
+                }
+            });
+
+            // Всплытие демо
+            document.getElementById('bubbleParent').addEventListener('click', function() {
+                document.getElementById('preventionOutput').textContent += ' Родитель ';
+            });
+
+            document.getElementById('bubbleChild').addEventListener('click', function(e) {
+                document.getElementById('preventionOutput').textContent += ' Дочерний ';
+                // e.stopPropagation(); // раскомментируйте для остановки всплытия
+            });
+
+            // Ссылка с preventDefault
+            document.getElementById('preventLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('preventionOutput').textContent = 'Переход по ссылке отменен!';
+            });
+        });
+
+        function addListItem() {
+            const list = document.getElementById('delegationDemo');
+            const newItem = document.createElement('li');
+            newItem.textContent = `Элемент ${list.children.length + 1}`;
+            list.appendChild(newItem);
+        }
+
+        function checkEventsQuiz() {
+            const correctAnswers = {
+                q1: 'c', // addEventListener
+                q2: 'a', // Добавление одного обработчика на родителя
+                q3: 'a', // event.preventDefault()
+                q4: 'a', // event.stopPropagation()
+                q5: 'a', // Элемент, на котором произошло событие
+                q6: 'a', // input
+                q7: 'a', // removeEventListener
+                q8: 'a', // Событие идет сверху вниз
+                q9: 'a', // event.code
+                q10: 'a' // Immediately Invoked Function Expression
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в событиях!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('eventsQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+</body>
+</html>

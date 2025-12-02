@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переменные и типы данных - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #3498db;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .topic-content section {
+            margin-bottom: 3rem;
+        }
+        
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .topic-content h3 {
+            color: #3498db;
+            margin: 1.5rem 0 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">Переменные и типы данных</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#variables" class="toc-link active">Объявление переменных</a></li>
+                        <li><a href="#types" class="toc-link">Типы данных</a></li>
+                        <li><a href="#conversion" class="toc-link">Преобразование типов</a></li>
+                        <li><a href="#scope" class="toc-link">Область видимости</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>📦 Переменные и типы данных</h1>
+                    
+                    <section id="variables">
+                        <h2>Объявление переменных</h2>
+                        
+                        <h3>let</h3>
+                        <p>Используется для объявления переменных, которые могут изменяться:</p>
+                        <div class="code-block">
+<span class="code-keyword">let</span> name = <span class="code-string">"John"</span>;<br>
+name = <span class="code-string">"Jane"</span>; <span class="code-comment">// Можно изменить значение</span><br>
+<span class="code-keyword">let</span> age = <span class="code-number">25</span>;
+                        </div>
+                        
+                        <h3>const</h3>
+                        <p>Используется для объявления констант (неизменяемых переменных):</p>
+                        <div class="code-block">
+<span class="code-keyword">const</span> PI = <span class="code-number">3.14</span>;<br>
+<span class="code-comment">// PI = 3.15; // Ошибка! Константу нельзя изменить</span><br>
+<span class="code-keyword">const</span> user = { name: <span class="code-string">"John"</span> };<br>
+user.name = <span class="code-string">"Jane"</span>; <span class="code-comment">// Но можно изменять свойства объектов</span>
+                        </div>
+
+                        <h3>var (устаревший)</h3>
+                        <p>Устаревший способ объявления переменных, не рекомендуется к использованию:</p>
+                        <div class="code-block">
+<span class="code-keyword">var</span> count = <span class="code-number">10</span>; <span class="code-comment">// Не рекомендуется</span>
+                        </div>
+                    </section>
+
+                    <section id="types">
+                        <h2>🔤 Типы данных</h2>
+                        
+                        <p>JavaScript имеет 8 основных типов данных:</p>
+                        
+                        <div class="code-block">
+<span class="code-comment">// Примитивные типы</span><br>
+<span class="code-keyword">let</span> str = <span class="code-string">"Hello"</span>; <span class="code-comment">// String</span><br>
+<span class="code-keyword">let</span> num = <span class="code-number">42</span>; <span class="code-comment">// Number</span><br>
+<span class="code-keyword">let</span> big = <span class="code-number">1234567890123456789012345678901234567890n</span>; <span class="code-comment">// BigInt</span><br>
+<span class="code-keyword">let</span> bool = <span class="code-keyword">true</span>; <span class="code-comment">// Boolean</span><br>
+<span class="code-keyword">let</span> nothing = <span class="code-keyword">null</span>; <span class="code-comment">// Null</span><br>
+<span class="code-keyword">let</span> notDefined = <span class="code-keyword">undefined</span>; <span class="code-comment">// Undefined</span><br>
+<span class="code-keyword">let</span> sym = <span class="code-keyword">Symbol</span>(<span class="code-string">"id"</span>); <span class="code-comment">// Symbol</span><br><br>
+                            
+<span class="code-comment">// Объектный тип</span><br>
+<span class="code-keyword">let</span> obj = { name: <span class="code-string">"John"</span> }; <span class="code-comment">// Object</span>
+                        </div>
+                    </section>
+
+                    <section id="conversion">
+                        <h2>🔄 Преобразование типов</h2>
+                        
+                        <p>JavaScript автоматически преобразует типы, но можно делать это явно:</p>
+                        
+                        <div class="code-block">
+<span class="code-comment">// Явное преобразование</span><br>
+<span class="code-keyword">let</span> str = <span class="code-string">"123"</span>;<br>
+<span class="code-keyword">let</span> num = <span class="code-keyword">Number</span>(str); <span class="code-comment">// 123 (число)</span><br>
+<span class="code-keyword">let</span> bool = <span class="code-keyword">Boolean</span>(num); <span class="code-comment">// true</span><br><br>
+                            
+<span class="code-comment">// Неявное преобразование</span><br>
+<span class="code-keyword">let</span> result = <span class="code-string">"5"</span> + <span class="code-number">1</span>; <span class="code-comment">// "51" (конкатенация)</span><br>
+<span class="code-keyword">let</span> sum = <span class="code-string">"5"</span> - <span class="code-number">1</span>; <span class="code-comment">// 4 (вычитание)</span>
+                        </div>
+                    </section>
+
+                    <section id="scope">
+                        <h2>🎯 Область видимости</h2>
+                        
+                        <h3>Блочная область видимости (let, const)</h3>
+                        <div class="code-block">
+<span class="code-keyword">if</span> (<span class="code-keyword">true</span>) {<br>
+&nbsp;&nbsp;<span class="code-keyword">let</span> blockScoped = <span class="code-string">"видна только в блоке"</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">const</span> alsoBlockScoped = <span class="code-string">"тоже только в блоке"</span>;<br>
+}<br>
+<span class="code-comment">// console.log(blockScoped); // Ошибка!</span>
+                        </div>
+
+                        <h3>Функциональная область видимости (var)</h3>
+                        <div class="code-block">
+<span class="code-keyword">function</span> <span class="code-function">test</span>() {<br>
+&nbsp;&nbsp;<span class="code-keyword">var</span> functionScoped = <span class="code-string">"видна во всей функции"</span>;<br>
+&nbsp;&nbsp;<span class="code-keyword">if</span> (<span class="code-keyword">true</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">var</span> stillVisible = <span class="code-string">"тоже видна"</span>;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;console.log(stillVisible); <span class="code-comment">// Работает</span><br>
+}
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: Переменные и типы данных</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="variablesQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Какое ключевое слово используется для объявления константы?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q1" value="a"> var
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q1" value="b"> let
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q1" value="c"> const
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Что выведет console.log(typeof null)?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q2" value="a"> "null"
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q2" value="b"> "object"
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q2" value="c"> "undefined"
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Какой тип данных представляет собой 42n?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q3" value="a"> Number
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q3" value="b"> BigInt
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q3" value="c"> String
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Что выведет console.log("5" + 2)?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q4" value="a"> 7
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q4" value="b"> "52"
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q4" value="c"> Ошибка
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Какая переменная имеет блочную область видимости?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q5" value="a"> var
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q5" value="b"> let
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q5" value="c"> Все вышеперечисленные
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Как преобразовать строку "123" в число?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q6" value="a"> String("123")
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q6" value="b"> Number("123")
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q6" value="c"> parseInt("123")
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Что такое undefined?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q7" value="a"> Пустое значение
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q7" value="b"> Отсутствие значения
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q7" value="c"> Нулевое значение
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Можно ли изменить значение const переменной?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q8" value="a"> Да, всегда
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q8" value="b"> Нет, никогда
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q8" value="c"> Можно изменить свойства объекта
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Какой оператор проверяет тип и значение?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q9" value="a"> ==
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q9" value="b"> ===
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q9" value="c"> =
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Что выведет console.log(Boolean(""))?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label">
+                                        <input type="radio" name="q10" value="a"> true
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q10" value="b"> false
+                                    </label>
+                                    <label class="answer-label">
+                                        <input type="radio" name="q10" value="c"> undefined
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkVariablesQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="index.html" class="topic-btn" style="background: #95a5a6;">← На главную</a>
+                        <a href="operators.html" class="topic-btn">Операторы →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function checkVariablesQuiz() {
+            const correctAnswers = {
+                q1: 'c', // const
+                q2: 'b', // object
+                q3: 'b', // BigInt
+                q4: 'b', // "52"
+                q5: 'b', // let
+                q6: 'b', // Number("123")
+                q7: 'b', // Отсутствие значения
+                q8: 'c', // Можно изменить свойства объекта
+                q9: 'b', // ===
+                q10: 'b' // false
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в переменных и типах данных!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('variablesQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+                // window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            }
+        });
+    </script>
+</body>
+</html>

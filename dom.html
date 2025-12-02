@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Manipulation - Modern JS Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.5;
+            border-left: 4px solid #1abc9c;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-function { color: #dcdcaa; }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #1abc9c;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answers {
+            margin-top: 1rem;
+        }
+        
+        .answer-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-label:hover {
+            background: #e0f2f1;
+            border-color: #1abc9c;
+        }
+        
+        .answer-label input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .topic-content section {
+            margin-bottom: 3rem;
+        }
+        
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .topic-content h3 {
+            color: #1abc9c;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .topic-btn {
+            display: inline-block;
+            background: #1abc9c;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .topic-btn:hover {
+            background: #16a085;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px dashed #1abc9c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Modern JS Guide</span>
+                    <span class="logo-subtitle">DOM Manipulation</span>
+                </h1>
+                <div class="search-container">
+                    <form class="search-form" id="searchForm">
+                        <input type="text" id="searchInput" placeholder="Поиск по справочнику..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <span>🔍</span>
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="toc">
+                    <h3 class="toc-title">📚 Содержание</h3>
+                    <ul class="toc-list">
+                        <li><a href="#selection" class="toc-link active">Выбор элементов</a></li>
+                        <li><a href="#manipulation" class="toc-link">Изменение элементов</a></li>
+                        <li><a href="#creation" class="toc-link">Создание элементов</a></li>
+                        <li><a href="#styles" class="toc-link">Работа со стилями</a></li>
+                        <li><a href="#quiz" class="toc-link">Тест</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <article class="topic-content">
+                    <h1>🌐 DOM Manipulation</h1>
+                    
+                    <section id="selection">
+                        <h2>Выбор элементов</h2>
+                        
+                        <h3>Методы выбора</h3>
+                        <div class="code-block">
+<span class="code-comment">// По id</span><br>
+<span class="code-keyword">const</span> header = document.<span class="code-function">getElementById</span>(<span class="code-string">'header'</span>);<br><br>
+<span class="code-comment">// По классу</span><br>
+<span class="code-keyword">const</span> items = document.<span class="code-function">getElementsByClassName</span>(<span class="code-string">'item'</span>);<br><br>
+<span class="code-comment">// По тегу</span><br>
+<span class="code-keyword">const</span> paragraphs = document.<span class="code-function">getElementsByTagName</span>(<span class="code-string">'p'</span>);<br><br>
+<span class="code-comment">// CSS селекторы</span><br>
+<span class="code-keyword">const</span> element = document.<span class="code-function">querySelector</span>(<span class="code-string">'.container'</span>);<br>
+<span class="code-keyword">const</span> allElements = document.<span class="code-function">querySelectorAll</span>(<span class="code-string">'.item'</span>);
+                        </div>
+                        
+                        <h3>Пример выбора элементов</h3>
+                        <div class="demo-area">
+                            <div id="demo-header">Заголовок демо</div>
+                            <p class="demo-text">Первый параграф</p>
+                            <p class="demo-text">Второй параграф</p>
+                            <button onclick="demoSelection()">Показать выбор элементов</button>
+                        </div>
+                    </section>
+
+                    <section id="manipulation">
+                        <h2>🔧 Изменение элементов</h2>
+                        
+                        <h3>Изменение содержимого</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> div = document.<span class="code-function">querySelector</span>(<span class="code-string">'#myDiv'</span>);<br><br>
+<span class="code-comment">// Изменение текста</span><br>
+div.textContent = <span class="code-string">'Новый текст'</span>;<br>
+div.innerText = <span class="code-string">'Другой текст'</span>;<br><br>
+<span class="code-comment">// Изменение HTML</span><br>
+div.innerHTML = <span class="code-string">'&lt;strong&gt;Жирный текст&lt;/strong&gt;'</span>;<br><br>
+<span class="code-comment">// Изменение атрибутов</span><br>
+div.<span class="code-function">setAttribute</span>(<span class="code-string">'data-info'</span>, <span class="code-string">'value'</span>);<br>
+div.classList.<span class="code-function">add</span>(<span class="code-string">'active'</span>);<br>
+div.classList.<span class="code-function">remove</span>(<span class="code-string">'old-class'</span>);
+                        </div>
+
+                        <h3>Демонстрация изменения</h3>
+                        <div class="demo-area">
+                            <div id="change-demo">Исходный текст</div>
+                            <button onclick="changeText()">Изменить текст</button>
+                            <button onclick="addHTML()">Добавить HTML</button>
+                            <button onclick="toggleClass()">Переключить класс</button>
+                        </div>
+                    </section>
+
+                    <section id="creation">
+                        <h2>🆕 Создание и удаление элементов</h2>
+                        
+                        <h3>Создание элементов</h3>
+                        <div class="code-block">
+<span class="code-comment">// Создание элемента</span><br>
+<span class="code-keyword">const</span> newElement = document.<span class="code-function">createElement</span>(<span class="code-string">'div'</span>);<br>
+newElement.textContent = <span class="code-string">'Я новый элемент!'</span>;<br>
+newElement.classList.<span class="code-function">add</span>(<span class="code-string">'new-class'</span>);<br><br>
+<span class="code-comment">// Добавление в DOM</span><br>
+document.body.<span class="code-function">appendChild</span>(newElement);<br>
+parentElement.<span class="code-function">prepend</span>(newElement); <span class="code-comment">// В начало</span><br>
+existingElement.<span class="code-function">after</span>(newElement); <span class="code-comment">// После элемента</span><br><br>
+<span class="code-comment">// Удаление элемента</span><br>
+element.<span class="code-function">remove</span>();<br>
+parentElement.<span class="code-function">removeChild</span>(childElement);
+                        </div>
+
+                        <h3>Демонстрация создания</h3>
+                        <div class="demo-area">
+                            <div id="list-container">
+                                <p>Существующий элемент</p>
+                            </div>
+                            <button onclick="createElement()">Создать элемент</button>
+                            <button onclick="removeElement()">Удалить элемент</button>
+                        </div>
+                    </section>
+
+                    <section id="styles">
+                        <h2>🎨 Работа со стилями</h2>
+                        
+                        <h3>Изменение стилей</h3>
+                        <div class="code-block">
+<span class="code-keyword">const</span> element = document.<span class="code-function">getElementById</span>(<span class="code-string">'myElement'</span>);<br><br>
+<span class="code-comment">// Прямое изменение стилей</span><br>
+element.style.color = <span class="code-string">'red'</span>;<br>
+element.style.backgroundColor = <span class="code-string">'blue'</span>;<br>
+element.style.fontSize = <span class="code-string">'20px'</span>;<br><br>
+<span class="code-comment">// Изменение нескольких стилей</span><br>
+<span class="code-keyword">Object</span>.<span class="code-function">assign</span>(element.style, {<br>
+&nbsp;&nbsp;color: <span class="code-string">'white'</span>,<br>
+&nbsp;&nbsp;backgroundColor: <span class="code-string">'black'</span>,<br>
+&nbsp;&nbsp;padding: <span class="code-string">'10px'</span><br>
+});
+                        </div>
+
+                        <h3>Демонстрация стилей</h3>
+                        <div class="demo-area">
+                            <div id="style-demo">Текст для стилизации</div>
+                            <button onclick="changeColor()">Изменить цвет</button>
+                            <button onclick="changeBackground()">Изменить фон</button>
+                            <button onclick="resetStyles()">Сбросить стили</button>
+                        </div>
+                    </section>
+
+                    <section id="quiz" class="quiz-container">
+                        <h2>🎯 Тест: DOM Manipulation</h2>
+                        <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+                        
+                        <form id="domQuiz">
+                            <!-- Вопрос 1 -->
+                            <div class="question">
+                                <p><strong>1. Как выбрать элемент с id="main"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q1" value="a"> document.querySelector('#main')</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="b"> document.getElementById('main')</label>
+                                    <label class="answer-label"><input type="radio" name="q1" value="c"> Оба варианта верны</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 2 -->
+                            <div class="question">
+                                <p><strong>2. Как создать новый div элемент?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q2" value="a"> document.newElement('div')</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="b"> document.createElement('div')</label>
+                                    <label class="answer-label"><input type="radio" name="q2" value="c"> document.addElement('div')</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 3 -->
+                            <div class="question">
+                                <p><strong>3. Как изменить текст элемента?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q3" value="a"> element.textContent</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="b"> element.innerHTML</label>
+                                    <label class="answer-label"><input type="radio" name="q3" value="c"> element.value</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 4 -->
+                            <div class="question">
+                                <p><strong>4. Как добавить класс к элементу?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q4" value="a"> element.addClass()</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="b"> element.classList.add()</label>
+                                    <label class="answer-label"><input type="radio" name="q4" value="c"> element.className.add()</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 5 -->
+                            <div class="question">
+                                <p><strong>5. Как выбрать все элементы с классом "item"?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q5" value="a"> document.querySelectorAll('.item')</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="b"> document.getElementsByClassName('item')</label>
+                                    <label class="answer-label"><input type="radio" name="q5" value="c"> Оба варианта верны</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 6 -->
+                            <div class="question">
+                                <p><strong>6. Как удалить элемент из DOM?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q6" value="a"> element.remove()</label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="b"> element.delete()</span></label>
+                                    <label class="answer-label"><input type="radio" name="q6" value="c"> document.remove(element)</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 7 -->
+                            <div class="question">
+                                <p><strong>7. Как добавить элемент в конец другого элемента?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q7" value="a"> parent.appendChild(child)</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="b"> parent.prepend(child)</label>
+                                    <label class="answer-label"><input type="radio" name="q7" value="c"> parent.add(child)</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 8 -->
+                            <div class="question">
+                                <p><strong>8. Как изменить стиль элемента?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q8" value="a"> element.style.property = value</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="b"> element.css(property, value)</label>
+                                    <label class="answer-label"><input type="radio" name="q8" value="c"> element.setStyle(property, value)</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 9 -->
+                            <div class="question">
+                                <p><strong>9. Что такое DOM?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q9" value="a"> Document Object Model</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="b"> Data Object Management</label>
+                                    <label class="answer-label"><input type="radio" name="q9" value="c"> Document Orientation Model</label>
+                                </div>
+                            </div>
+
+                            <!-- Вопрос 10 -->
+                            <div class="question">
+                                <p><strong>10. Как получить значение атрибута data-id?</strong></p>
+                                <div class="answers">
+                                    <label class="answer-label"><input type="radio" name="q10" value="a"> element.getAttribute('data-id')</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="b"> element.data.id</label>
+                                    <label class="answer-label"><input type="radio" name="q10" value="c"> element.attribute('data-id')</label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="topic-btn" onclick="checkDomQuiz()" style="margin-top: 2rem;">
+                                Проверить ответы
+                            </button>
+                        </form>
+
+                        <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                            <h3>Результат теста</h3>
+                            <p id="resultText"></p>
+                            <button onclick="resetQuiz()" class="topic-btn" style="background: #3498db; margin-top: 1rem;">
+                                Пройти тест снова
+                            </button>
+                        </div>
+                    </section>
+
+                    <div class="nav-buttons">
+                        <a href="arrays.html" class="topic-btn" style="background: #95a5a6;">← Массивы</a>
+                        <a href="events.html" class="topic-btn">События →</a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Modern JS Guide</h4>
+                    <p>Изучайте JavaScript с удовольствием!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Modern JS Guide</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Демонстрационные функции
+        function demoSelection() {
+            const header = document.getElementById('demo-header');
+            const texts = document.querySelectorAll('.demo-text');
+            alert(`Выбран заголовок: "${header.textContent}"\nНайдено ${texts.length} параграфов`);
+        }
+
+        function changeText() {
+            const demo = document.getElementById('change-demo');
+            demo.textContent = 'Текст изменен!';
+        }
+
+        function addHTML() {
+            const demo = document.getElementById('change-demo');
+            demo.innerHTML = '<strong>HTML добавлен!</strong>';
+        }
+
+        function toggleClass() {
+            const demo = document.getElementById('change-demo');
+            demo.classList.toggle('highlight');
+        }
+
+        function createElement() {
+            const container = document.getElementById('list-container');
+            const newElement = document.createElement('p');
+            newElement.textContent = 'Новый созданный элемент ' + (container.children.length);
+            container.appendChild(newElement);
+        }
+
+        function removeElement() {
+            const container = document.getElementById('list-container');
+            if (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function changeColor() {
+            const demo = document.getElementById('style-demo');
+            demo.style.color = 'red';
+        }
+
+        function changeBackground() {
+            const demo = document.getElementById('style-demo');
+            demo.style.backgroundColor = 'yellow';
+        }
+
+        function resetStyles() {
+            const demo = document.getElementById('style-demo');
+            demo.style.cssText = '';
+        }
+
+        function checkDomQuiz() {
+            const correctAnswers = {
+                q1: 'c', // Оба варианта верны
+                q2: 'b', // document.createElement('div')
+                q3: 'a', // element.textContent
+                q4: 'b', // element.classList.add()
+                q5: 'c', // Оба варианта верны
+                q6: 'a', // element.remove()
+                q7: 'a', // parent.appendChild(child)
+                q8: 'a', // element.style.property = value
+                q9: 'a', // Document Object Model
+                q10: 'a' // element.getAttribute('data-id')
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в DOM!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('domQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+        
+        // Поиск
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                alert(`Поиск: ${query}\n\nВ полной версии здесь будет переход к результатам поиска`);
+            }
+        });
+    </script>
+
+    <style>
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</body>
+</html> 

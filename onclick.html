@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обработчик onclick - Modern JS Guide</title>
+    <style>
+        /* Используем те же стили, что и в основном файле */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--secondary), #4a6491);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: var(--transition);
+        }
+        
+        .back-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+            overflow-x: auto;
+        }
+        
+        .code-example h4 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+        
+        code {
+            background: #f1f3f4;
+            color: #d32f2f;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .example-container {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px dashed #e0e0e0;
+        }
+        
+        .demo-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        
+        .demo-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .demo-btn.danger {
+            background: var(--accent);
+        }
+        
+        .demo-btn.danger:hover {
+            background: #c0392b;
+        }
+        
+        .demo-btn.success {
+            background: var(--success);
+        }
+        
+        .demo-btn.success:hover {
+            background: #27ae60;
+        }
+        
+        #demo-output {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 60px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .counter-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .counter-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tip-box {
+            background: #e8f4fc;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .tip-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .warning-box {
+            background: #fdf2e9;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .warning-box h4 {
+            color: var(--warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .practice-exercise {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px solid var(--primary);
+        }
+        
+        .practice-exercise h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .exercise-task {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        /* Стили для теста */
+        .quiz-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 2px solid var(--primary);
+        }
+        
+        .quiz-container h2 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .question strong {
+            display: block;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+        
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .answer-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        
+        .answer-label:hover {
+            background: #f0f7ff;
+            border-color: var(--primary);
+        }
+        
+        .answer-label input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        #quizResult {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid var(--success);
+            box-shadow: var(--shadow);
+        }
+        
+        #quizResult h3 {
+            color: var(--success);
+            margin-top: 0;
+        }
+        
+        #resultText {
+            margin-bottom: 20px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .nav-btn:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.next {
+            background: var(--primary);
+        }
+        
+        .nav-btn.next:hover {
+            background: var(--primary-dark);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .counter-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🎯 Обработчик onclick</h1>
+        <p>Изучите как использовать обработчик событий onclick для реагирования на клики пользователя</p>
+        <a href="index.html" class="back-btn">← Назад к справочнику</a>
+    </header>
+
+    <main class="content">
+        <section class="section">
+            <h2>📚 Введение</h2>
+            <p>Обработчик <code>onclick</code> — это один из самых распространенных способов обработки событий в JavaScript. Он позволяет выполнять код при клике на элемент.</p>
+            
+            <div class="tip-box">
+                <h4>💡 Основная концепция</h4>
+                <p><code>onclick</code> является обработчиком события "click". Когда пользователь кликает на элемент с установленным обработчиком <code>onclick</code>, выполняется указанная функция.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🛠️ Способы использования onclick</h2>
+            
+            <h3>1. Inline обработчик (в HTML)</h3>
+            <p>Самый простой способ — добавление обработчика прямо в HTML-разметке:</p>
+            
+            <div class="code-example">
+                <h4>Пример 1: Базовый inline обработчик</h4>
+                <pre><code>&lt;button onclick="alert('Привет, мир!')"&gt;
+    Нажми меня
+&lt;/button&gt;</code></pre>
+                
+                <div class="example-container">
+                    <p>Демонстрация:</p>
+                    <button onclick="alert('Привет, мир!')" class="demo-btn">
+                        Нажми меня
+                    </button>
+                </div>
+            </div>
+            
+            <div class="code-example">
+                <h4>Пример 2: Вызов функции</h4>
+                <pre><code>&lt;button onclick="showMessage()"&gt;
+    Показать сообщение
+&lt;/button&gt;
+
+&lt;script&gt;
+function showMessage() {
+    alert('Функция вызвана!');
+}
+&lt;/script&gt;</code></pre>
+                
+                <div class="example-container">
+                    <p>Демонстрация:</p>
+                    <button onclick="demoShowMessage()" class="demo-btn">
+                        Показать сообщение
+                    </button>
+                    <script>
+                        function demoShowMessage() {
+                            alert('Функция showMessage() вызвана!');
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <h3>2. Использование свойства onclick</h3>
+            <p>Более чистый способ — установка обработчика через JavaScript:</p>
+            
+            <div class="code-example">
+                <h4>Пример 3: Установка через JavaScript</h4>
+                <pre><code>&lt;button id="myButton"&gt;
+    Нажми меня
+&lt;/button&gt;
+
+&lt;script&gt;
+document.getElementById('myButton').onclick = function() {
+    alert('Обработчик установлен через JavaScript!');
+};
+&lt;/script&gt;</code></pre>
+                
+                <div class="example-container">
+                    <p>Демонстрация:</p>
+                    <button id="jsButton" class="demo-btn">
+                        Кнопка с JS обработчиком
+                    </button>
+                    <div id="demo-output"></div>
+                </div>
+            </div>
+
+            <h3>3. Использование addEventListener</h3>
+            <p>Современный и рекомендуемый способ:</p>
+            
+            <div class="code-example">
+                <h4>Пример 4: addEventListener</h4>
+                <pre><code>&lt;button id="modernButton"&gt;
+    Современная кнопка
+&lt;/button&gt;
+
+&lt;script&gt;
+document.getElementById('modernButton')
+    .addEventListener('click', function() {
+        alert('Используем addEventListener!');
+    });
+&lt;/script&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🎮 Интерактивные примеры</h2>
+            
+            <div class="example-container">
+                <h3>Счетчик кликов</h3>
+                <p>Давайте создадим простой счетчик, который увеличивается при каждом клике:</p>
+                
+                <div class="counter-display" id="clickCounter">0</div>
+                
+                <div class="counter-controls">
+                    <button onclick="incrementCounter()" class="demo-btn">
+                        + Увеличить
+                    </button>
+                    <button onclick="decrementCounter()" class="demo-btn danger">
+                        - Уменьшить
+                    </button>
+                    <button onclick="resetCounter()" class="demo-btn">
+                        ⟳ Сбросить
+                    </button>
+                </div>
+                
+                <script>
+                    let counter = 0;
+                    
+                    function incrementCounter() {
+                        counter++;
+                        updateCounterDisplay();
+                    }
+                    
+                    function decrementCounter() {
+                        if (counter > 0) {
+                            counter--;
+                            updateCounterDisplay();
+                        }
+                    }
+                    
+                    function resetCounter() {
+                        counter = 0;
+                        updateCounterDisplay();
+                    }
+                    
+                    function updateCounterDisplay() {
+                        document.getElementById('clickCounter').textContent = counter;
+                    }
+                </script>
+            </div>
+            
+            <div class="example-container">
+                <h3>Изменение стилей</h3>
+                <p>Изменим стиль элемента при клике:</p>
+                
+                <div id="styleDemo" style="padding: 20px; background: #e0e0e0; border-radius: 10px; margin: 15px 0;">
+                    <p>Этот блок меняет стиль при клике</p>
+                </div>
+                
+                <button onclick="changeStyle()" class="demo-btn success">
+                    Изменить стиль
+                </button>
+                <button onclick="resetStyle()" class="demo-btn">
+                    Сбросить стиль
+                </button>
+                
+                <script>
+                    function changeStyle() {
+                        const demo = document.getElementById('styleDemo');
+                        demo.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                        demo.style.color = 'white';
+                        demo.style.transform = 'scale(1.05)';
+                        demo.style.transition = 'all 0.3s ease';
+                        demo.innerHTML = '<p>🎉 Стиль изменен! Еще раз кликните "Сбросить стиль"</p>';
+                    }
+                    
+                    function resetStyle() {
+                        const demo = document.getElementById('styleDemo');
+                        demo.style.background = '#e0e0e0';
+                        demo.style.color = 'black';
+                        demo.style.transform = 'scale(1)';
+                        demo.innerHTML = '<p>Этот блок меняет стиль при клике</p>';
+                    }
+                </script>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>⚠️ Важные замечания</h2>
+            
+            <div class="warning-box">
+                <h4>⚠️ Ограничения inline обработчиков</h4>
+                <p><strong>Минусы inline подхода:</strong></p>
+                <ul>
+                    <li>Смешивает HTML и JavaScript (плохая практика)</li>
+                    <li>Сложно поддерживать</li>
+                    <li>Можно установить только один обработчик</li>
+                    <li>Уязвимость к XSS атакам при неправильном использовании</li>
+                </ul>
+            </div>
+            
+            <div class="tip-box">
+                <h4>✅ Рекомендации</h4>
+                <p><strong>Лучшие практики:</strong></p>
+                <ul>
+                    <li>Используйте <code>addEventListener</code> вместо inline обработчиков</li>
+                    <li>Разделяйте HTML и JavaScript код</li>
+                    <li>Для динамических элементов используйте делегирование событий</li>
+                    <li>Всегда проверяйте существование элемента перед добавлением обработчика</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🔄 Преимущества addEventListener перед onclick</h2>
+            
+            <div class="code-example">
+                <h4>Сравнение подходов</h4>
+                <pre><code>// ПЛОХО: можно установить только один обработчик
+element.onclick = function() { console.log('Первый'); };
+element.onclick = function() { console.log('Второй'); }; 
+// Выполнится только второй обработчик
+
+// ХОРОШО: можно добавить несколько обработчиков
+element.addEventListener('click', function() { console.log('Первый'); });
+element.addEventListener('click', function() { console.log('Второй'); });
+// Выполнятся оба обработчика</code></pre>
+            </div>
+            
+            <p><code>addEventListener</code> также поддерживает дополнительные опции, такие как capture фаза и once (одноразовое выполнение).</p>
+        </section>
+
+        <section class="practice-exercise">
+            <h3>📝 Практическое задание</h3>
+            <p>Создайте простой переключатель темы (темная/светлая):</p>
+            
+            <div class="exercise-task">
+                <p><strong>Задача:</strong> Создайте кнопку, которая переключает тему страницы между светлой и темной.</p>
+                
+                <div id="themeDemo" style="padding: 20px; margin: 15px 0; border-radius: 10px;">
+                    <p>Это демонстрационный блок для темы</p>
+                </div>
+                
+                <button onclick="toggleTheme()" id="themeToggle" class="demo-btn">
+                    🌙 Включить темную тему
+                </button>
+                
+                <script>
+                    let isDarkTheme = false;
+                    
+                    function toggleTheme() {
+                        isDarkTheme = !isDarkTheme;
+                        const demo = document.getElementById('themeDemo');
+                        const button = document.getElementById('themeToggle');
+                        
+                        if (isDarkTheme) {
+                            demo.style.background = '#2c3e50';
+                            demo.style.color = 'white';
+                            button.textContent = '☀️ Включить светлую тему';
+                            button.classList.add('success');
+                        } else {
+                            demo.style.background = '#f8f9fa';
+                            demo.style.color = 'black';
+                            button.textContent = '🌙 Включить темную тему';
+                            button.classList.remove('success');
+                        }
+                    }
+                </script>
+            </div>
+        </section>
+
+        <!-- ТЕСТ из 10 вопросов -->
+        <section class="quiz-container">
+            <h2>🎯 Тест: Обработчик onclick</h2>
+            <p>Проверьте свои знания! Ответьте на 10 вопросов.</p>
+            
+            <form id="onclickQuiz">
+                <!-- Вопрос 1 -->
+                <div class="question">
+                    <p><strong>1. Какой атрибут HTML используется для обработки кликов?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q1" value="a"> onhover</label>
+                        <label class="answer-label"><input type="radio" name="q1" value="b"> onclick</label>
+                        <label class="answer-label"><input type="radio" name="q1" value="c"> onpress</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 2 -->
+                <div class="question">
+                    <p><strong>2. Как установить обработчик onclick через JavaScript?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q2" value="a"> element.click = function()</label>
+                        <label class="answer-label"><input type="radio" name="q2" value="b"> element.onclick = function()</label>
+                        <label class="answer-label"><input type="radio" name="q2" value="c"> element.setClick(function)</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 3 -->
+                <div class="question">
+                    <p><strong>3. Какой метод рекомендуется использовать вместо onclick?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q3" value="a"> addEventListener</label>
+                        <label class="answer-label"><input type="radio" name="q3" value="b"> attachEvent</label>
+                        <label class="answer-label"><input type="radio" name="q3" value="c"> onEvent</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 4 -->
+                <div class="question">
+                    <p><strong>4. Какой недостаток у inline обработчиков onclick?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q4" value="a"> Смешивают HTML и JavaScript</label>
+                        <label class="answer-label"><input type="radio" name="q4" value="b"> Медленная работа</label>
+                        <label class="answer-label"><input type="radio" name="q4" value="c"> Не работают в мобильных браузерах</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 5 -->
+                <div class="question">
+                    <p><strong>5. Как можно отменить стандартное действие при клике?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q5" value="a"> event.cancel()</label>
+                        <label class="answer-label"><input type="radio" name="q5" value="b"> event.preventDefault()</label>
+                        <label class="answer-label"><input type="radio" name="q5" value="c"> event.stop()</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 6 -->
+                <div class="question">
+                    <p><strong>6. Как получить элемент, на котором произошел клик?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q6" value="a"> event.target</label>
+                        <label class="answer-label"><input type="radio" name="q6" value="b"> this</label>
+                        <label class="answer-label"><input type="radio" name="q6" value="c"> Оба варианта верны</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 7 -->
+                <div class="question">
+                    <p><strong>7. Сколько обработчиков onclick можно установить через свойство element.onclick?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q7" value="a"> Только один</label>
+                        <label class="answer-label"><input type="radio" name="q7" value="b"> Неограниченно</label>
+                        <label class="answer-label"><input type="radio" name="q7" value="c"> До трех</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 8 -->
+                <div class="question">
+                    <p><strong>8. Какой объект передается в функцию обработчика onclick?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q8" value="a"> Event</label>
+                        <label class="answer-label"><input type="radio" name="q8" value="b"> MouseEvent</label>
+                        <label class="answer-label"><input type="radio" name="q8" value="c"> ClickEvent</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 9 -->
+                <div class="question">
+                    <p><strong>9. Как удалить обработчик onclick?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q9" value="a"> element.onclick = null</label>
+                        <label class="answer-label"><input type="radio" name="q9" value="b"> removeEventListener</label>
+                        <label class="answer-label"><input type="radio" name="q9" value="c"> Оба варианта верны</label>
+                    </div>
+                </div>
+
+                <!-- Вопрос 10 -->
+                <div class="question">
+                    <p><strong>10. Какой метод лучше для динамически созданных элементов?</strong></p>
+                    <div class="answers">
+                        <label class="answer-label"><input type="radio" name="q10" value="a"> Делегирование событий</label>
+                        <label class="answer-label"><input type="radio" name="q10" value="b"> Inline обработчики</label>
+                        <label class="answer-label"><input type="radio" name="q10" value="c"> Установка onclick для каждого элемента</label>
+                    </div>
+                </div>
+
+                <button type="button" onclick="checkOnclickQuiz()" class="demo-btn" style="margin-top: 2rem;">
+                    Проверить ответы
+                </button>
+            </form>
+
+            <div id="quizResult" style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #27ae60;">
+                <h3>Результат теста</h3>
+                <p id="resultText"></p>
+                <button onclick="resetQuiz()" class="demo-btn" style="background: #3498db; margin-top: 1rem;">
+                    Пройти тест снова
+                </button>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="events.html" class="nav-btn">
+                ← События
+            </a>
+            <a href="forms.html" class="nav-btn next">
+                Формы →
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Инициализация демо-кнопки из примера 3
+        document.addEventListener('DOMContentLoaded', function() {
+            const jsButton = document.getElementById('jsButton');
+            const demoOutput = document.getElementById('demo-output');
+            
+            jsButton.onclick = function() {
+                demoOutput.innerHTML = `
+                    <p>✅ Обработчик onclick сработал!</p>
+                    <p>Текущее время: ${new Date().toLocaleTimeString()}</p>
+                    <p>Кнопка была нажата</p>
+                `;
+            };
+        });
+
+        // Функции для теста
+        function checkOnclickQuiz() {
+            const correctAnswers = {
+                q1: 'b', // onclick
+                q2: 'b', // element.onclick = function()
+                q3: 'a', // addEventListener
+                q4: 'a', // Смешивают HTML и JavaScript
+                q5: 'b', // event.preventDefault()
+                q6: 'c', // Оба варианта верны
+                q7: 'a', // Только один
+                q8: 'b', // MouseEvent
+                q9: 'c', // Оба варианта верны
+                q10: 'a' // Делегирование событий
+            };
+            
+            let score = 0;
+            const total = Object.keys(correctAnswers).length;
+            
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            const percentage = (score / total) * 100;
+            const resultDiv = document.getElementById('quizResult');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.innerHTML = `
+                Вы ответили правильно на <strong>${score} из ${total}</strong> вопросов (${percentage.toFixed(1)}%)<br><br>
+                ${percentage >= 80 ? 
+                    '🎉 Отлично! Вы прекрасно разбираетесь в обработчике onclick!' : 
+                percentage >= 60 ?
+                    '👍 Хорошо! Есть некоторые пробелы, но в целом вы понимаете тему.' :
+                    '📚 Рекомендуем повторить материал еще раз и пройти тест заново.'
+                }
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetQuiz() {
+            document.getElementById('onclickQuiz').reset();
+            document.getElementById('quizResult').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
